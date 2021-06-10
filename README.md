@@ -1,2 +1,2 @@
 # MLMS
-Machine learning for mass spectrometry 
+Library for machine learning for mass spectrometry 

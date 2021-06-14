@@ -32,8 +32,7 @@ select_file_info<-function(filename){
         `Date & Time` = file_datetime
       ),
       # explicitly allow for file specific rename (for the new ID column)
-      file_specific = TRUE
+      #file_specific = TRUE #mostly useful with data from different instruments
     )
   }
 
-#rm(list = c("read_summ", "select_file_info"))

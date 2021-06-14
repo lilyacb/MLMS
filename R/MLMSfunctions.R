@@ -13,14 +13,15 @@ read_summ<-function(filename){
 }
 
 
-#' select_file_info:
-#' @param filename character string of the name of the .dxf file of data
+#' select_file_info: select the information  Name, Analysis, Peak Center, H3 Factor, Date & Time from each of the files specified
+#' @param files vector containing character strings of the names of the .dxf files
 #' @return file information - Name, Analysis, Peak Center, H3 Factor, Date & Time
 #' @example
 #' Usage example
 #' @export
-select_file_info<-function(filename){
-  msdat<-iso_read_continuous_flow(filename)
+select_file_info<-function(files){
+  num_files<-length(files)
+  msdat<-iso_read_continuous_flow(files[1:num_files])
   file_info<-msdat %>%
     iso_get_file_info(
       select = c(

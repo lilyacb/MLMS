@@ -2,7 +2,7 @@
 % Please edit documentation in R/MLMSfunctions.R
 \name{select_file_info}
 \alias{select_file_info}
-\title{select file information:}
+\title{select_file_info:}
 \usage{
 select_file_info(filename)
 }
@@ -13,5 +13,5 @@ select_file_info(filename)
 file information - Name, Analysis, Peak Center, H3 Factor, Date & Time
 }
 \description{
-select file information:
+select_file_info:
 }

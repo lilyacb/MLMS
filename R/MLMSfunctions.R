@@ -13,7 +13,7 @@ read_summ<-function(filename){
 }
 
 
-#' select file information:
+#' select_file_info:
 #' @param filename character string of the name of the .dxf file of data
 #' @return file information - Name, Analysis, Peak Center, H3 Factor, Date & Time
 #' @example
@@ -35,3 +35,5 @@ select_file_info<-function(filename){
       file_specific = TRUE
     )
   }
+
+#rm(list = c("read_summ", "select_file_info"))

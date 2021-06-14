@@ -14,7 +14,7 @@ read_summ<-function(filename){
 
 
 #' select_file_info: select specific info from collection of .dxf files (Identifier 1, Analysis, Peak Center, file_datetime)
-#' @param files vector containing character strings of the names of the .dxf files
+#' @param files vector containing character strings of .dxf filenames
 #' @return dataframe of file information - file_idName, Analysis, Peak Center, Date_and_Time
 #' @example
 #' Usage example
@@ -39,3 +39,15 @@ select_file_info<-function(files){
   file_info.df<-as.data.frame(file_info)
   }
 
+#' get_raw_df: get the raw data from .dxf files as a dataframe
+#' @param files vector containing character strings of .dxf filenames
+#' @return dataframe containing all raw data in the .dxf files
+#' @examples
+#' Usage example
+#' @export
+get_raw_df<-function(files){
+  num_files<-length(files)
+  msdat<-iso_read_continuous_flow(files[1:num_files])
+  raw_dat<-iso_get_raw_data(msdat)
+  raw_dat.df<-as.data.frame(raw_dat)
+}

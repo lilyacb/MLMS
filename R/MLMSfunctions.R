@@ -13,9 +13,9 @@ read_summ<-function(filename){
 }
 
 
-#' select_file_info: select the information  Name, Analysis, Peak Center, H3 Factor, Date & Time from each of the files specified
+#' select_file_info: select specific info from collection of .dxf files (Identifier 1, Analysis, Peak Center, file_datetime)
 #' @param files vector containing character strings of the names of the .dxf files
-#' @return file information - Name, Analysis, Peak Center, H3 Factor, Date & Time
+#' @return dataframe of file information - file_idName, Analysis, Peak Center, Date_and_Time
 #' @example
 #' Usage example
 #' @export
@@ -25,15 +25,17 @@ select_file_info<-function(files){
   file_info<-msdat %>%
     iso_get_file_info(
       select = c(
-      # rename sample id columns from the different file types to a new ID column
-        ID = `Identifier 1`, ID = `Name`,
+        #rename
+        Name = `Identifier 1`,
       # select columns without renaming
-        `Analysis`, `Peak Center`, `H3 Factor`,
+        `Analysis`, `Peak Center`,
       # select the time stamp and rename it to `Date & Time`
-        `Date & Time` = file_datetime
+        Date_and_Time = file_datetime
       ),
       # explicitly allow for file specific rename (for the new ID column)
-      #file_specific = TRUE #mostly useful with data from different instruments
+      file_specific = TRUE #mostly useful with data from different instruments
     )
+  # convert from tibble to df
+  file_info.df<-as.data.frame(file_info)
   }
 

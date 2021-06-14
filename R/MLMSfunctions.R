@@ -11,3 +11,27 @@ read_summ<-function(filename){
   summ<-summary(msdat)
   print(summ)
 }
+
+
+#' select file information:
+#' @param filename character string of the name of the .dxf file of data
+#' @return file information - Name, Analysis, Peak Center, H3 Factor, Date & Time
+#' @example
+#' Usage example
+#' @export
+select_file_info<-function(filename){
+  msdat<-iso_read_continuous_flow(filename)
+  file_info<-msdat %>%
+    iso_get_file_info(
+      select = c(
+      # rename sample id columns from the different file types to a new ID column
+        ID = `Identifier 1`, ID = `Name`,
+      # select columns without renaming
+        `Analysis`, `Peak Center`, `H3 Factor`,
+      # select the time stamp and rename it to `Date & Time`
+        `Date & Time` = file_datetime
+      ),
+      # explicitly allow for file specific rename (for the new ID column)
+      file_specific = TRUE
+    )
+  }

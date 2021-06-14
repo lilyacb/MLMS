@@ -1,5 +1,5 @@
 setwd("~lily/Desktop/MASPEX")
-install.packages("isoreader")
+#install.packages("isoreader")
 library(isoreader)
 
 # NASA example data

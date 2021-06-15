@@ -41,7 +41,7 @@ select_file_info<-function(files){
 
 
 
-#' select_vendor_info: get vendor info with labeled experiment names for a collection of .dxf files - Identifier 1, Nr., Start, End, d13C/12C, d18O/16O
+#' select_vendor_info: get specific vendor info with labeled experiment names for a collection of .dxf files (Identifier 1, Nr., Start, End, d13C/12C, d18O/16O)
 #' @param files vector containing character strings of .dxf filenames
 #' @return dataframe of vendor information with rows labeled with experiment name (Identifier 1)
 #' @examples

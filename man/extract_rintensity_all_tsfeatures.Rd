@@ -7,7 +7,7 @@
 extract_rintensity_all_tsfeatures(rintensity_all.num)
 }
 \arguments{
-\item{intensity_all.num}{numeric vector containing the Intensity_All data}
+\item{rintensity_all.num}{numeric vector containing the rIntensity_All data}
 }
 \value{
 dataframe containing the extracted tsfeatures of the Intensity_All data

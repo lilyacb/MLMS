@@ -167,7 +167,7 @@ get_reference_values_no_ratio <- function(files){
 
 
 #' extract_rintensity_all_tsfeatures: extract time series features from Intensity_All using tsfeatures
-#' @param intensity_all.num numeric vector containing the Intensity_All data
+#' @param rintensity_all.num numeric vector containing the rIntensity_All data
 #' @return dataframe containing the extracted tsfeatures of the Intensity_All data
 #' @examples
 #' Usage Example

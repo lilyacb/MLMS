@@ -8,7 +8,7 @@
 select_vendor_info(files)
 }
 \arguments{
-\item{files}{vector containing character strings of .dxf filenames}
+\item{files}{vector containing character strings of .dxf file names}
 }
 \value{
 dataframe of vendor information with rows labeled with experiment name (Identifier 1)

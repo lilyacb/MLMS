@@ -7,7 +7,7 @@
 select_file_info(files)
 }
 \arguments{
-\item{files}{vector containing character strings of .dxf filenames}
+\item{files}{vector containing character strings of .dxf file names}
 }
 \value{
 dataframe of file information - file_idName, Analysis, Peak Center, Date_and_Time

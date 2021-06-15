@@ -5,7 +5,7 @@
 #' @return summary table of file contents
 #' @examples
 #' Usage example
-#' read_summ("170525_NaHCO3 L + NaCl L_.dxf")
+#' summ<-read_summ("170525_NaHCO3 L + NaCl L_.dxf")
 #' @export
 read_summ<-function(filename){
   msdat<-iso_read_continuous_flow(filename)
@@ -21,7 +21,7 @@ read_summ<-function(filename){
 #' Usage example
 #' data_files<-c("170525_NaHCO3 L + NaCl L_.dxf","170525_NaHCO3 L + NaCl U_.dxf","170525_NaHCO3 L_.dxf","170525_NaHCO3 U + NaCl L_.dxf",
 #' "170525_NaHCO3 U + NaCl U_.dxf","170525_NaHCO3 U_.dxf")
-#' select_file_info(data_files)
+#' file_info<-select_file_info(data_files)
 #' @export
 select_file_info<-function(files){
   num_files<-length(files)
@@ -52,7 +52,7 @@ select_file_info<-function(files){
 #' Usage Example
 #' data_files<-c("170525_NaHCO3 L + NaCl L_.dxf","170525_NaHCO3 L + NaCl U_.dxf","170525_NaHCO3 L_.dxf","170525_NaHCO3 U + NaCl L_.dxf",
 #' "170525_NaHCO3 U + NaCl U_.dxf","170525_NaHCO3 U_.dxf")
-#' select_vendor_info(data_files)
+#' vend_info<-select_vendor_info(data_files)
 #' @export
 select_vendor_info<-function(files){
   num_files<-length(files)
@@ -104,7 +104,7 @@ select_vendor_info<-function(files){
 #' Usage example
 #' data_files<-c("170525_NaHCO3 L + NaCl L_.dxf","170525_NaHCO3 L + NaCl U_.dxf","170525_NaHCO3 L_.dxf","170525_NaHCO3 U + NaCl L_.dxf",
 #' "170525_NaHCO3 U + NaCl U_.dxf","170525_NaHCO3 U_.dxf")
-#' get_raw_df(data_files)
+#' raw_dat<-get_raw_df(data_files)
 #' @export
 get_raw_df<-function(files){
   num_files<-length(files)
@@ -131,4 +131,38 @@ get_resistor_df<-function(files){
 }
 
 
-#' get_reference_values_df: get isotopic reference values as a dataframe
+#' get_reference_values_ratio: get isotopic reference values as a dataframe
+#' @param files vector containing character strings of .dxf file names
+#' @return dataframe of reference values in the .dxf files
+#' @examples
+#' Usage example
+#' data_files<-c("170525_NaHCO3 L + NaCl L_.dxf","170525_NaHCO3 L + NaCl U_.dxf","170525_NaHCO3 L_.dxf","170525_NaHCO3 U + NaCl L_.dxf",
+#' "170525_NaHCO3 U + NaCl U_.dxf","170525_NaHCO3 U_.dxf")
+#' stand_ratio<-get_reference_values_ratio(data_files)
+#' @export
+get_reference_values_ratio <- function(files){
+  num_files<-length(files)
+  msdat<-iso_read_continuous_flow(files[1:num_files])
+  # reference values with ratios
+  ref_with_ratios<-msdat %>% iso_get_standards()
+  ref_with_ratios.df<-as.data.frame(ref_with_ratios)
+}
+
+
+#' get_reference_values_no_ratio: get isotopic reference values as a dataframe
+#' @param files vector containing character strings of .dxf file names
+#' @return dataframe of reference values in the .dxf files
+#' @examples
+#' Usage example
+#' data_files<-c("170525_NaHCO3 L + NaCl L_.dxf","170525_NaHCO3 L + NaCl U_.dxf","170525_NaHCO3 L_.dxf","170525_NaHCO3 U + NaCl L_.dxf",
+#' "170525_NaHCO3 U + NaCl U_.dxf","170525_NaHCO3 U_.dxf")
+#' stand_no_ratio<-get_reference_values_no_ratio(data_files)
+#' @export
+get_reference_values_no_ratio <- function(files){
+  num_files<-length(files)
+  msdat<-iso_read_continuous_flow(files[1:num_files])
+  # reference delta values without ratio values
+  delta_no_ratio<-msdat %>% iso_get_standards(file_id:reference)
+  delta_no_ratio.df<-as.data.frame(delta_no_ratio)
+}
+

@@ -3,10 +3,10 @@
 #' read_summ: read and print a summary of mass spec data from a .dxf file
 #' @param filename character string of the name of the .dxf file of data
 #' @return summary table of file contents
-#' @example
+#' @examples
 #' Usage example
 #' @export
-read_summ<-function(filename){
+read_summ<-function(filename){ #FIXME: update so arg is files, vector of filenames
   msdat<-iso_read_continuous_flow(filename)
   summ<-summary(msdat)
   print(summ)
@@ -16,8 +16,11 @@ read_summ<-function(filename){
 #' select_file_info: select specific info from collection of .dxf files (Identifier 1, Analysis, Peak Center, file_datetime)
 #' @param files vector containing character strings of .dxf filenames
 #' @return dataframe of file information - file_idName, Analysis, Peak Center, Date_and_Time
-#' @example
+#' @examples
 #' Usage example
+#' data_files<-c("170525_NaHCO3 L + NaCl L_.dxf","170525_NaHCO3 L + NaCl U_.dxf","170525_NaHCO3 L_.dxf","170525_NaHCO3 U + NaCl L_.dxf",
+#' "170525_NaHCO3 U + NaCl U_.dxf","170525_NaHCO3 U_.dxf")
+#' select_file_info(data_files)
 #' @export
 select_file_info<-function(files){
   num_files<-length(files)
@@ -47,6 +50,9 @@ select_file_info<-function(files){
 #' @return dataframe of vendor information with rows labeled with experiment name (Identifier 1)
 #' @examples
 #' Usage Example
+#' data_files<-c("170525_NaHCO3 L + NaCl L_.dxf","170525_NaHCO3 L + NaCl U_.dxf","170525_NaHCO3 L_.dxf","170525_NaHCO3 U + NaCl L_.dxf",
+#' "170525_NaHCO3 U + NaCl U_.dxf","170525_NaHCO3 U_.dxf")
+#' select_vendor_info(data_files)
 #' @export
 select_vendor_info<-function(files){
   num_files<-length(files)
@@ -90,12 +96,14 @@ select_vendor_info<-function(files){
 }
 
 
-
 #' get_raw_df: get the raw data from .dxf files as a dataframe
 #' @param files vector containing character strings of .dxf filenames
 #' @return dataframe containing all raw data in the .dxf files
 #' @examples
 #' Usage example
+#' #' data_files<-c("170525_NaHCO3 L + NaCl L_.dxf","170525_NaHCO3 L + NaCl U_.dxf","170525_NaHCO3 L_.dxf","170525_NaHCO3 U + NaCl L_.dxf",
+#' "170525_NaHCO3 U + NaCl U_.dxf","170525_NaHCO3 U_.dxf")
+#' get_raw_df(data_files)
 #' @export
 get_raw_df<-function(files){
   num_files<-length(files)

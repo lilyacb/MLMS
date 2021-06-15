@@ -15,3 +15,6 @@ summary table of file contents
 \description{
 read_summ: read and print a summary of mass spec data from a .dxf file
 }
+\examples{
+Usage example
+}

@@ -2,16 +2,22 @@
 % Please edit documentation in R/MLMSfunctions.R
 \name{select_file_info}
 \alias{select_file_info}
-\title{select_file_info:}
+\title{select_file_info: select specific info from collection of .dxf files (Identifier 1, Analysis, Peak Center, file_datetime)}
 \usage{
-select_file_info(filename)
+select_file_info(files)
 }
 \arguments{
-\item{filename}{character string of the name of the .dxf file of data}
+\item{files}{vector containing character strings of .dxf filenames}
 }
 \value{
-file information - Name, Analysis, Peak Center, H3 Factor, Date & Time
+dataframe of file information - file_idName, Analysis, Peak Center, Date_and_Time
 }
 \description{
-select_file_info:
+select_file_info: select specific info from collection of .dxf files (Identifier 1, Analysis, Peak Center, file_datetime)
+}
+\examples{
+Usage example
+data_files<-c("170525_NaHCO3 L + NaCl L_.dxf","170525_NaHCO3 L + NaCl U_.dxf","170525_NaHCO3 L_.dxf","170525_NaHCO3 U + NaCl L_.dxf",
+"170525_NaHCO3 U + NaCl U_.dxf","170525_NaHCO3 U_.dxf")
+select_file_info(data_files)
 }

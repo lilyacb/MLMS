@@ -168,10 +168,10 @@ get_reference_values_no_ratio <- function(files){
 
 #' extract_rintensity_all_tsfeatures: extract time series features from Intensity_All using tsfeatures
 #' @param rintensity_all.num numeric vector containing the rIntensity_All data
-#' @return dataframe containing the extracted tsfeatures of the Intensity_All data
+#' @return dataframe containing the extracted tsfeatures of the rIntensity_All data
 #' @examples
 #' Usage Example
-#' feat<-extract_intensity_all_tsfeatures(int_all_num)
+#' feat<-extract_rintensity_all_tsfeatures(int_all_num)
 #' @export
 extract_rintensity_all_tsfeatures<-function(rintensity_all.num){
   features.tib<-tsfeatures(rintensity_all.num,

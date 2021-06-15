@@ -10,12 +10,12 @@ extract_rintensity_all_tsfeatures(rintensity_all.num)
 \item{rintensity_all.num}{numeric vector containing the rIntensity_All data}
 }
 \value{
-dataframe containing the extracted tsfeatures of the Intensity_All data
+dataframe containing the extracted tsfeatures of the rIntensity_All data
 }
 \description{
 extract_rintensity_all_tsfeatures: extract time series features from Intensity_All using tsfeatures
 }
 \examples{
 Usage Example
-feat<-extract_intensity_all_tsfeatures(int_all_num)
+feat<-extract_rintensity_all_tsfeatures(int_all_num)
 }

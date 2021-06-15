@@ -87,10 +87,11 @@ select_vendor_info<-function(files){
                  vendor_info$Rt,
                  vendor_info$End,
                  vendor_info$`Intensity All`,
+                 vendor_info$`rIntensity All`,
                  vendor_info$`d 13C/12C`,
                  vendor_info$`d 18O/16O`)
   vendor_info_select.df<-as.data.frame(vendor_info_select)
-  colnames(vendor_info_select.df)<-c("Name","Peak_Nr","Start","Rt","End","Intensity_All","d13C/12C","d18O/16O")#"Area_All"
+  colnames(vendor_info_select.df)<-c("Name","Peak_Nr","Start","Rt","End","Intensity_All","rIntensity_All","d13C/12C","d18O/16O")#"Area_All"
   return(vendor_info_select.df)
 }
 
@@ -165,15 +166,15 @@ get_reference_values_no_ratio <- function(files){
 }
 
 
-#' extract_intensity_all_tsfeatures: extract time series features from Intensity_All using tsfeatures
+#' extract_rintensity_all_tsfeatures: extract time series features from Intensity_All using tsfeatures
 #' @param intensity_all.num numeric vector containing the Intensity_All data
 #' @return dataframe containing the extracted tsfeatures of the Intensity_All data
 #' @examples
 #' Usage Example
 #' feat<-extract_intensity_all_tsfeatures(int_all_num)
 #' @export
-extract_intensity_all_tsfeatures<-function(intensity_all.num){
-  features.tib<-tsfeatures(intensity_all.num,
+extract_rintensity_all_tsfeatures<-function(rintensity_all.num){
+  features.tib<-tsfeatures(rintensity_all.num,
                            features=c("acf_features","arch_stat","crossing_points",
                                       "entropy","flat_spots","heterogeneity",
                                       "holt_parameters","hurst",

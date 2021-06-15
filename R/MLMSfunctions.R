@@ -45,7 +45,7 @@ select_file_info<-function(files){
 
 
 #' select_vendor_info: get specific vendor info with labeled experiment names for a collection of .dxf files
-#' (Identifier 1, Nr., Start, Rt, End, Area All, d13C/12C, d18O/16O)
+#' (Identifier 1, Nr., Start, Rt, End, Intensity All, d13C/12C, d18O/16O)
 #' @param files vector containing character strings of .dxf file names
 #' @return dataframe of vendor information with rows labeled with experiment name (Identifier 1)
 #' @examples
@@ -58,8 +58,6 @@ select_vendor_info<-function(files){
   num_files<-length(files)
   msdat<-iso_read_continuous_flow(files[1:num_files])
   file.info<-msdat %>% iso_get_file_info()
-  #file.id<-file.info$`file_id`
-  #print(file.id)
   ident1<-file.info$`Identifier 1`
   print(ident1)
   vendor_info<-msdat %>% iso_get_vendor_data_table()
@@ -88,11 +86,11 @@ select_vendor_info<-function(files){
                  vendor_info$Start,
                  vendor_info$Rt,
                  vendor_info$End,
-                 vendor_info$`Area All`,
+                 vendor_info$`Intensity All`,
                  vendor_info$`d 13C/12C`,
                  vendor_info$`d 18O/16O`)
   vendor_info_select.df<-as.data.frame(vendor_info_select)
-  colnames(vendor_info_select.df)<-c("Name","Peak_Nr","Start","Rt","End","Area_All","d13C/12C","d18O/16O")
+  colnames(vendor_info_select.df)<-c("Name","Peak_Nr","Start","Rt","End","Intensity_All","d13C/12C","d18O/16O")#"Area_All"
   return(vendor_info_select.df)
 }
 

@@ -3,7 +3,7 @@
 \name{select_vendor_info}
 \alias{select_vendor_info}
 \title{select_vendor_info: get specific vendor info with labeled experiment names for a collection of .dxf files
-(Identifier 1, Nr., Start, Rt, End, Area All, d13C/12C, d18O/16O)}
+(Identifier 1, Nr., Start, Rt, End, Intensity All, d13C/12C, d18O/16O)}
 \usage{
 select_vendor_info(files)
 }
@@ -15,7 +15,7 @@ dataframe of vendor information with rows labeled with experiment name (Identifi
 }
 \description{
 select_vendor_info: get specific vendor info with labeled experiment names for a collection of .dxf files
-(Identifier 1, Nr., Start, Rt, End, Area All, d13C/12C, d18O/16O)
+(Identifier 1, Nr., Start, Rt, End, Intensity All, d13C/12C, d18O/16O)
 }
 \examples{
 Usage Example

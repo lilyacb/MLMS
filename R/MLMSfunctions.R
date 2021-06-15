@@ -5,8 +5,9 @@
 #' @return summary table of file contents
 #' @examples
 #' Usage example
+#' read_summ("170525_NaHCO3 L + NaCl L_.dxf")
 #' @export
-read_summ<-function(filename){ #FIXME: update so arg is files, vector of filenames
+read_summ<-function(filename){
   msdat<-iso_read_continuous_flow(filename)
   summ<-summary(msdat)
   print(summ)
@@ -14,7 +15,7 @@ read_summ<-function(filename){ #FIXME: update so arg is files, vector of filenam
 
 
 #' select_file_info: select specific info from collection of .dxf files (Identifier 1, Analysis, Peak Center, file_datetime)
-#' @param files vector containing character strings of .dxf filenames
+#' @param files vector containing character strings of .dxf file names
 #' @return dataframe of file information - file_idName, Analysis, Peak Center, Date_and_Time
 #' @examples
 #' Usage example
@@ -43,10 +44,9 @@ select_file_info<-function(files){
   }
 
 
-
 #' select_vendor_info: get specific vendor info with labeled experiment names for a collection of .dxf files
 #' (Identifier 1, Nr., Start, Rt, End, d13C/12C, d18O/16O)
-#' @param files vector containing character strings of .dxf filenames
+#' @param files vector containing character strings of .dxf file names
 #' @return dataframe of vendor information with rows labeled with experiment name (Identifier 1)
 #' @examples
 #' Usage Example
@@ -88,16 +88,17 @@ select_vendor_info<-function(files){
                  vendor_info$Start,
                  vendor_info$Rt,
                  vendor_info$End,
+                 vendor_info$`Area All`,
                  vendor_info$`d 13C/12C`,
                  vendor_info$`d 18O/16O`)
   vendor_info_select.df<-as.data.frame(vendor_info_select)
-  colnames(vendor_info_select.df)<-c("Name","Peak_Nr","Start","Rt","End","d13C/12C","d18O/16O")
+  colnames(vendor_info_select.df)<-c("Name","Peak_Nr","Start","Rt","End","Area_All","d13C/12C","d18O/16O")
   return(vendor_info_select.df)
 }
 
 
 #' get_raw_df: get the raw data from .dxf files as a dataframe
-#' @param files vector containing character strings of .dxf filenames
+#' @param files vector containing character strings of .dxf file names
 #' @return dataframe containing all raw data in the .dxf files
 #' @examples
 #' Usage example
@@ -111,3 +112,21 @@ get_raw_df<-function(files){
   raw_dat<- msdat %>% iso_get_raw_data()
   raw_dat.df<-as.data.frame(raw_dat)
 }
+
+
+#' get_resistor_df: get resistor info for collection of .dxf files as a dataframe
+#' @param files vector containing character strings of .dxf file names
+#' @return dataframe of resistor info in the .dxf files
+#' @examples
+#' Usage example
+#' data_files<-c("170525_NaHCO3 L + NaCl L_.dxf","170525_NaHCO3 L + NaCl U_.dxf","170525_NaHCO3 L_.dxf","170525_NaHCO3 U + NaCl L_.dxf",
+#' "170525_NaHCO3 U + NaCl U_.dxf","170525_NaHCO3 U_.dxf")
+#' resist<-get_resistor_df(data_files)
+#' @export
+get_resistor_df<-function(files){
+  num_files<-length(files)
+  msdat<-iso_read_continuous_flow(files[1:num_files])
+  resistors<-iso_get_resistors(msdat)
+  resistors.df<-as.data.frame(resistors)
+}
+

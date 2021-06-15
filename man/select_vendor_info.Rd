@@ -3,7 +3,7 @@
 \name{select_vendor_info}
 \alias{select_vendor_info}
 \title{select_vendor_info: get specific vendor info with labeled experiment names for a collection of .dxf files
-(Identifier 1, Nr., Start, Rt, End, d13C/12C, d18O/16O)}
+(Identifier 1, Nr., Start, Rt, End, Area All, d13C/12C, d18O/16O)}
 \usage{
 select_vendor_info(files)
 }
@@ -15,11 +15,11 @@ dataframe of vendor information with rows labeled with experiment name (Identifi
 }
 \description{
 select_vendor_info: get specific vendor info with labeled experiment names for a collection of .dxf files
-(Identifier 1, Nr., Start, Rt, End, d13C/12C, d18O/16O)
+(Identifier 1, Nr., Start, Rt, End, Area All, d13C/12C, d18O/16O)
 }
 \examples{
 Usage Example
 data_files<-c("170525_NaHCO3 L + NaCl L_.dxf","170525_NaHCO3 L + NaCl U_.dxf","170525_NaHCO3 L_.dxf","170525_NaHCO3 U + NaCl L_.dxf",
 "170525_NaHCO3 U + NaCl U_.dxf","170525_NaHCO3 U_.dxf")
-select_vendor_info(data_files)
+vend_info<-select_vendor_info(data_files)
 }

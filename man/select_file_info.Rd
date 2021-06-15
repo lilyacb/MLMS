@@ -19,5 +19,5 @@ select_file_info: select specific info from collection of .dxf files (Identifier
 Usage example
 data_files<-c("170525_NaHCO3 L + NaCl L_.dxf","170525_NaHCO3 L + NaCl U_.dxf","170525_NaHCO3 L_.dxf","170525_NaHCO3 U + NaCl L_.dxf",
 "170525_NaHCO3 U + NaCl U_.dxf","170525_NaHCO3 U_.dxf")
-select_file_info(data_files)
+file_info<-select_file_info(data_files)
 }

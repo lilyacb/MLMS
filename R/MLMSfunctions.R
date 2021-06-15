@@ -45,7 +45,7 @@ select_file_info<-function(files){
 
 
 #' select_vendor_info: get specific vendor info with labeled experiment names for a collection of .dxf files
-#' (Identifier 1, Nr., Start, Rt, End, d13C/12C, d18O/16O)
+#' (Identifier 1, Nr., Start, Rt, End, Area All, d13C/12C, d18O/16O)
 #' @param files vector containing character strings of .dxf file names
 #' @return dataframe of vendor information with rows labeled with experiment name (Identifier 1)
 #' @examples
@@ -130,3 +130,5 @@ get_resistor_df<-function(files){
   resistors.df<-as.data.frame(resistors)
 }
 
+
+#' get_reference_values_df: get isotopic reference values as a dataframe

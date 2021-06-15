@@ -164,3 +164,27 @@ get_reference_values_no_ratio <- function(files){
   delta_no_ratio.df<-as.data.frame(delta_no_ratio)
 }
 
+
+#' extract_intensity_all_tsfeatures: extract time series features from Intensity_All using tsfeatures
+#' @param intensity_all.num numeric vector containing the Intensity_All data
+#' @return dataframe containing the extracted tsfeatures of the Intensity_All data
+#' @examples
+#' Usage Example
+#' feat<-extract_intensity_all_tsfeatures(int_all_num)
+#' @export
+extract_intensity_all_tsfeatures<-function(intensity_all.num){
+  features.tib<-tsfeatures(intensity_all.num,
+                           features=c("acf_features","arch_stat","crossing_points",
+                                      "entropy","flat_spots","heterogeneity",
+                                      "holt_parameters","hurst",
+                                      "lumpiness","max_kl_shift","max_level_shift",
+                                      "max_var_shift","nonlinearity","pacf_features",
+                                      "stability","stl_features","unitroot_kpss","unitroot_pp",
+                                      "ac_9",
+                                      "firstmin_ac","firstzero_ac","fluctanal_prop_r1",
+                                      "histogram_mode","localsimple_taures","motiftwo_entro3",
+                                      "outlierinclude_mdrmd","sampenc","sampen_first",
+                                      "std1st_der","trev_num", #,"spreadrandomlocal_meantaul"
+                                      "walker_propcross"))
+  features.df<-as.data.frame(features.tib)
+}

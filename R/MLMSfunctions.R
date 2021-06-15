@@ -101,7 +101,7 @@ select_vendor_info<-function(files){
 #' @return dataframe containing all raw data in the .dxf files
 #' @examples
 #' Usage example
-#' #' data_files<-c("170525_NaHCO3 L + NaCl L_.dxf","170525_NaHCO3 L + NaCl U_.dxf","170525_NaHCO3 L_.dxf","170525_NaHCO3 U + NaCl L_.dxf",
+#' data_files<-c("170525_NaHCO3 L + NaCl L_.dxf","170525_NaHCO3 L + NaCl U_.dxf","170525_NaHCO3 L_.dxf","170525_NaHCO3 U + NaCl L_.dxf",
 #' "170525_NaHCO3 U + NaCl U_.dxf","170525_NaHCO3 U_.dxf")
 #' get_raw_df(data_files)
 #' @export

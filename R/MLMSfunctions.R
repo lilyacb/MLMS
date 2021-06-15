@@ -41,7 +41,8 @@ select_file_info<-function(files){
 
 
 
-#' select_vendor_info: get specific vendor info with labeled experiment names for a collection of .dxf files (Identifier 1, Nr., Start, End, d13C/12C, d18O/16O)
+#' select_vendor_info: get specific vendor info with labeled experiment names for a collection of .dxf files
+#' (Identifier 1, Nr., Start, Rt, End, d13C/12C, d18O/16O)
 #' @param files vector containing character strings of .dxf filenames
 #' @return dataframe of vendor information with rows labeled with experiment name (Identifier 1)
 #' @examples
@@ -79,11 +80,12 @@ select_vendor_info<-function(files){
   }
   vendor_info_select<-cbind(name.vec,peak_num,
                  vendor_info$Start,
+                 vendor_info$Rt,
                  vendor_info$End,
                  vendor_info$`d 13C/12C`,
                  vendor_info$`d 18O/16O`)
   vendor_info_select.df<-as.data.frame(vendor_info_select)
-  colnames(vendor_info_select.df)<-c("Name","Peak_Nr","Start","End","d13C/12C","d18O/16O")
+  colnames(vendor_info_select.df)<-c("Name","Peak_Nr","Start","Rt","End","d13C/12C","d18O/16O")
   return(vendor_info_select.df)
 }
 

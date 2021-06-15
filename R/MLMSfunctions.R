@@ -26,9 +26,9 @@ select_file_info<-function(files){
     iso_get_file_info(
       select = c(
         #rename
-        Name = `Identifier 1`,
+        Identifier_1 = `Identifier 1`,
       # select columns without renaming
-        `Analysis`, `Peak Center`,
+        `Analysis`, `Preparation`,
       # select the time stamp and rename it to `Date & Time`
         Date_and_Time = file_datetime
       ),
@@ -39,6 +39,56 @@ select_file_info<-function(files){
   file_info.df<-as.data.frame(file_info)
   }
 
+
+
+#' select_vendor_info: get vendor info with labeled experiment names for a collection of .dxf files - Identifier 1, Nr., Start, End, d13C/12C, d18O/16O
+#' @param files vector containing character strings of .dxf filenames
+#' @return dataframe of vendor information with rows labeled with experiment name (Identifier 1)
+#' @examples
+#' Usage Example
+#' @export
+select_vendor_info<-function(files){
+  num_files<-length(files)
+  msdat<-iso_read_continuous_flow(files[1:num_files])
+  file.info<-msdat %>% iso_get_file_info()
+  #file.id<-file.info$`file_id`
+  #print(file.id)
+  ident1<-file.info$`Identifier 1`
+  print(ident1)
+  vendor_info<-msdat %>% iso_get_vendor_data_table()
+  peak_num<-vendor_info$Nr.
+  # create name col for data (not part of vendor data table)
+  m=1
+  i=1
+  name.vec<-c()
+  for(m in seq(1:length(data_files))){
+    while(peak_num[i+1]>peak_num[i]){
+      # add name for this experiment
+      name<-ident1[m]
+      #print(name)
+      name.vec<-c(name.vec,name)
+      i=i+1
+      #print(i)
+      if(i==length(peak_num)){
+        break
+      }
+    }
+    i=i+1
+    name<-ident1[m]
+    name.vec<-c(name.vec,name)
+  }
+  vendor_info_select<-cbind(name.vec,peak_num,
+                 vendor_info$Start,
+                 vendor_info$End,
+                 vendor_info$`d 13C/12C`,
+                 vendor_info$`d 18O/16O`)
+  vendor_info_select.df<-as.data.frame(vendor_info_select)
+  colnames(vendor_info_select.df)<-c("Name","Peak_Nr","Start","End","d13C/12C","d18O/16O")
+  return(vendor_info_select.df)
+}
+
+
+
 #' get_raw_df: get the raw data from .dxf files as a dataframe
 #' @param files vector containing character strings of .dxf filenames
 #' @return dataframe containing all raw data in the .dxf files
@@ -48,6 +98,6 @@ select_file_info<-function(files){
 get_raw_df<-function(files){
   num_files<-length(files)
   msdat<-iso_read_continuous_flow(files[1:num_files])
-  raw_dat<-iso_get_raw_data(msdat)
+  raw_dat<- msdat %>% iso_get_raw_data()
   raw_dat.df<-as.data.frame(raw_dat)
 }

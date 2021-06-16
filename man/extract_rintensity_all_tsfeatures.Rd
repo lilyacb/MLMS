@@ -2,7 +2,7 @@
 % Please edit documentation in R/MLMSfunctions.R
 \name{extract_rintensity_all_tsfeatures}
 \alias{extract_rintensity_all_tsfeatures}
-\title{extract_rintensity_all_tsfeatures: extract time series features from Intensity_All using tsfeatures}
+\title{extract_rintensity_all_tsfeatures: extract time series features from rIntensity_All using tsfeatures}
 \usage{
 extract_rintensity_all_tsfeatures(rintensity_all.num)
 }
@@ -13,7 +13,7 @@ extract_rintensity_all_tsfeatures(rintensity_all.num)
 dataframe containing the extracted tsfeatures of the rIntensity_All data
 }
 \description{
-extract_rintensity_all_tsfeatures: extract time series features from Intensity_All using tsfeatures
+extract_rintensity_all_tsfeatures: extract time series features from rIntensity_All using tsfeatures
 }
 \examples{
 Usage Example

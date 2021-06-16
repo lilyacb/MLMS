@@ -14,9 +14,9 @@ read_summ<-function(filename){
 }
 
 
-#' select_file_info: select specific info from collection of .dxf files (Identifier 1, Analysis, Peak Center, file_datetime)
+#' select_file_info: select specific info from collection of .dxf files (Identifier 1, Analysis, Preparation, file_datetime)
 #' @param files vector containing character strings of .dxf file names
-#' @return dataframe of file information - file_idName, Analysis, Peak Center, Date_and_Time
+#' @return dataframe of file information - file_id, Identifier_1, Analysis, Preparation, Date_and_Time
 #' @examples
 #' Usage example
 #' data_files<-c("170525_NaHCO3 L + NaCl L_.dxf","170525_NaHCO3 L + NaCl U_.dxf","170525_NaHCO3 L_.dxf","170525_NaHCO3 U + NaCl L_.dxf",
@@ -29,7 +29,7 @@ select_file_info<-function(files){
   file_info<-msdat %>%
     iso_get_file_info(
       select = c(
-        #rename
+        #rename?
         Identifier_1 = `Identifier 1`,
       # select columns without renaming
         `Analysis`, `Preparation`,
@@ -166,7 +166,7 @@ get_reference_values_no_ratio <- function(files){
 }
 
 
-#' extract_rintensity_all_tsfeatures: extract time series features from Intensity_All using tsfeatures
+#' extract_rintensity_all_tsfeatures: extract time series features from rIntensity_All using tsfeatures
 #' @param rintensity_all.num numeric vector containing the rIntensity_All data
 #' @return dataframe containing the extracted tsfeatures of the rIntensity_All data
 #' @examples

@@ -45,7 +45,7 @@ select_file_info<-function(files){
 
 
 #' select_vendor_info: get specific vendor info with labeled experiment names for a collection of .dxf files
-#' (Identifier 1, Nr., Start, Rt, End, Intensity All, d13C/12C, d18O/16O)
+#' (Identifier 1, Nr., Start, Rt, End, Intensity All, rIntensity All, d13C/12C, d18O/16O)
 #' @param files vector containing character strings of .dxf file names
 #' @return dataframe of vendor information with rows labeled with experiment name (Identifier 1)
 #' @examples
@@ -59,7 +59,7 @@ select_vendor_info<-function(files){
   msdat<-iso_read_continuous_flow(files[1:num_files])
   file.info<-msdat %>% iso_get_file_info()
   ident1<-file.info$`Identifier 1`
-  print(ident1)
+  #print(ident1)
   vendor_info<-msdat %>% iso_get_vendor_data_table()
   peak_num<-vendor_info$Nr.
   # create name col for data (not part of vendor data table)
@@ -179,13 +179,37 @@ extract_rintensity_all_tsfeatures<-function(rintensity_all.num){
                                       "entropy","flat_spots","heterogeneity",
                                       "holt_parameters","hurst",
                                       "lumpiness","max_kl_shift","max_level_shift",
-                                      "max_var_shift","nonlinearity","pacf_features",
-                                      "stability","stl_features","unitroot_kpss","unitroot_pp",
-                                      "ac_9",
-                                      "firstmin_ac","firstzero_ac","fluctanal_prop_r1",
+                                      "max_var_shift","nonlinearity",#"pacf_features",
+                                      #"stability",
+                                      #"stl_features",
+                                      #"unitroot_kpss",
+                                      #"unitroot_pp",
+                                      #"ac_9",
+                                      #"firstmin_ac",
+                                      #"firstzero_ac",
+                                      #"fluctanal_prop_r1",
                                       "histogram_mode","localsimple_taures","motiftwo_entro3",
                                       "outlierinclude_mdrmd","sampenc","sampen_first",
                                       "std1st_der","trev_num", #,"spreadrandomlocal_meantaul"
                                       "walker_propcross"))
   features.df<-as.data.frame(features.tib)
+}
+
+
+#' plot_ms:
+#' @param vendor_info.df dataframe of vendor info for only one experiment (may need to parse output from select_vendor_info())
+#' @param x_name name for desired x units for ms plot from vendor_info.df (default Rt)
+#' @param y_name name for desired y units for ms plot from vendor_info.df (default rIntensity_All)
+#' @return PlotSpec plot of the specified columns from vendor_info.df
+#' @examples
+#' Usgae example
+#' @export
+plot_ms<-function(vendor_info.df,x_name="Rt",y_name="rIntensity_All"){
+  x_ind<-which(colnames(vendor_info.df)==x_name)
+  x<-as.numeric(vendor_info.df[,x_ind])
+  y_ind<-which(colnames(vendor_info.df)==yname)
+  y<-as.numeric(vendor_info.df[,y_ind])
+  plot_dat.df<-as.data.frame(cbind(x,y))
+  colnames(plot_dat.df)<-c(x_name,y_name)
+  PlotSpec(plot_dat.df)
 }

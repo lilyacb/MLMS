@@ -2,7 +2,7 @@
 % Please edit documentation in R/MLMSfunctions.R
 \name{select_vendor_info}
 \alias{select_vendor_info}
-\title{select_vendor_info: get specific vendor info with labeled experiment names for a collection of .dxf files
+\title{select_vendor_info: get selected vendor info with labeled experiment names for a collection of .dxf files
 (Identifier 1, Nr., Start, Rt, End, Intensity All, rIntensity All, d13C/12C, d18O/16O)}
 \usage{
 select_vendor_info(files)
@@ -14,7 +14,7 @@ select_vendor_info(files)
 dataframe of vendor information with rows labeled with experiment name (Identifier 1)
 }
 \description{
-select_vendor_info: get specific vendor info with labeled experiment names for a collection of .dxf files
+select_vendor_info: get selected vendor info with labeled experiment names for a collection of .dxf files
 (Identifier 1, Nr., Start, Rt, End, Intensity All, rIntensity All, d13C/12C, d18O/16O)
 }
 \examples{

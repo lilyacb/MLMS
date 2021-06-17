@@ -4,17 +4,17 @@
 \alias{get_identifier_1_files}
 \title{get_identifier_1_files: function to get filenames whose Identifier_1 data matches the one specified}
 \usage{
-get_identifier_1_files(filenames, identifier_1, cores = 2)
+get_identifier_1_files(files, identifier_1, cores = 2)
 }
 \arguments{
-\item{filenames}{vector of filenames}
+\item{files}{vector of file names}
 
 \item{identifier_1}{the name of the desired Identifier_1}
 
-\item{cores}{number of cores to use for the grepl function to search through the filenames vector}
+\item{cores}{number of cores to use for the grepl function to search through the files vector}
 }
 \value{
-dataframe of filenames with the specified Identifier_1
+dataframe of file names with the specified Identifier_1
 }
 \description{
 get_identifier_1_files: function to get filenames whose Identifier_1 data matches the one specified

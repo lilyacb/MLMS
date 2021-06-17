@@ -230,15 +230,15 @@ get_all_filenames<-function(path){ #path to the directory of .dxf files
 }
 
 #' get_identifier_1_files: function to get filenames whose Identifier_1 data matches the one specified
-#' @param filenames vector of filenames
+#' @param files vector of file names
 #' @param identifier_1 the name of the desired Identifier_1
-#' @param cores number of cores to use for the grepl function to search through the filenames vector
-#' @return dataframe of filenames with the specified Identifier_1
+#' @param cores number of cores to use for the grepl function to search through the files vector
+#' @return dataframe of file names with the specified Identifier_1
 #' @examples
 #' Usage example
 #' identifier_files<-get_identifier_1_files(my_filenames,my_identifier_1)
 #' @export
-get_identifier_1_files<-function(filenames,identifier_1,cores=2){ #could use this func to loop through an identifier vec
+get_identifier_1_files<-function(files,identifier_1,cores=2){ #could use this func to loop through an identifier vec
   identifier_1_files_ind<-pvec(seq_along(filenames),function(i)
     grepl(identifier_1,filenames[i],fixed=T),mc.cores=cores)
   # get the indices

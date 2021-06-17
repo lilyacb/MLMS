@@ -239,8 +239,8 @@ get_all_filenames<-function(path){ #path to the directory of .dxf files
 #' identifier_files<-get_identifier_1_files(my_filenames,my_identifier_1)
 #' @export
 get_identifier_1_files<-function(files,identifier_1,cores=2){ #could use this func to loop through an identifier vec
-  identifier_1_files_ind<-pvec(seq_along(filenames),function(i)
-    grepl(identifier_1,filenames[i],fixed=T),mc.cores=cores)
+  identifier_1_files_ind<-pvec(seq_along(files),function(i)
+    grepl(identifier_1,files[i],fixed=T),mc.cores=cores)
   # get the indices
   identifier_1_files_ind<-which(identifier_1_files_ind) #which are TRUE
   # get the identifier_1 file names

@@ -213,3 +213,37 @@ plot_ms<-function(vendor_info.df,x_name="Rt",y_name="rIntensity_All"){
   colnames(plot_dat.df)<-c(x_name,y_name)
   PlotSpec(plot_dat.df)
 }
+
+
+#' get_all_filenames: function to get all file names from a directory of .dxf files
+#' @param path path to the directory of .dxf files
+#' @return vector of filenames for all .dxf files in the specified directory
+#' @examples
+#' Usage example
+#' filenames<-get_all_filenames("~/path_to_files")
+#' @export
+get_all_filenames<-function(path){ #path to the directory of .dxf files
+  all_iso<-iso_read_continuous_flow(path)
+  # get just file names
+  all_file_info<-iso_get_file_info(all_iso)
+  all_file_names<-all_file_info$file_id
+}
+
+#' get_identifier_1_files: function to get filenames whose Identifier_1 data matches the one specified
+#' @param filenames vector of filenames
+#' @param identifier_1 the name of the desired Identifier_1
+#' @param cores number of cores to use for the grepl function to search through the filenames vector
+#' @return dataframe of filenames with the specified Identifier_1
+#' @examples
+#' Usage example
+#' identifier_files<-get_identifier_1_files(my_filenames,my_identifier_1)
+#' @export
+get_identifier_1_files<-function(filenames,identifier_1,cores=2){ #could use this func to loop through an identifier vec
+  identifier_1_files_ind<-pvec(seq_along(filenames),function(i)
+    grepl(identifier_1,filenames[i],fixed=T),mc.cores=cores)
+  # get the indices
+  identifier_1_files_ind<-which(identifier_1_files_ind) #which are TRUE
+  # get the identifier_1 file names
+  identifier_1_files<-filenames[identifier_1_files_ind]
+}
+

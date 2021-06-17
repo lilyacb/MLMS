@@ -244,6 +244,9 @@ get_identifier_1_files<-function(files,identifier_1,cores=2){ #could use this fu
   # get the indices
   identifier_1_files_ind<-which(identifier_1_files_ind) #which are TRUE
   # get the identifier_1 file names
-  identifier_1_files<-filenames[identifier_1_files_ind]
+  identifier_1_files<-files[identifier_1_files_ind]
+  i1.df<-as.data.frame(identifier_1_files)
+  colnames(i1.df)<-c(identifier_1)
+  return(i1.df)
 }
 

@@ -1,5 +1,174 @@
 #### Functions for processing .dxf MS data files
 
+#' extract_rintensity_all_tsfeatures: extract time series features from rIntensity_All using tsfeatures
+#' @param rintensity_all.num numeric vector containing the rIntensity_All data
+#' @return dataframe containing the extracted tsfeatures of the rIntensity_All data
+#' @examples
+#' Usage Example
+#' feat<-extract_rintensity_all_tsfeatures(int_all_num)
+#' @export
+extract_rintensity_all_tsfeatures<-function(rintensity_all.num){
+  features.tib<-tsfeatures(rintensity_all.num,
+                           features=c("acf_features","arch_stat","crossing_points",
+                                      "entropy","flat_spots","heterogeneity",
+                                      "holt_parameters","hurst",
+                                      "lumpiness","max_kl_shift","max_level_shift",
+                                      "max_var_shift","nonlinearity",#"pacf_features",
+                                      #"stability",
+                                      #"stl_features",
+                                      #"unitroot_kpss",
+                                      #"unitroot_pp",
+                                      #"ac_9",
+                                      #"firstmin_ac",
+                                      #"firstzero_ac",
+                                      #"fluctanal_prop_r1",
+                                      "histogram_mode","localsimple_taures","motiftwo_entro3",
+                                      "outlierinclude_mdrmd","sampenc","sampen_first",
+                                      "std1st_der","trev_num", #,"spreadrandomlocal_meantaul"
+                                      "walker_propcross"))
+  features.df<-as.data.frame(features.tib)
+}
+
+
+#' file_move: function to move a file from one directory to another, and to create that directory if it does not exist
+#' @param from the original file directory
+#' @param to the new file directory
+#' @examples
+#' Usage example
+#' file_move(orig_dir,new_dir)
+#' @export
+file_move<-function(from, to){
+  todir <- dirname(to)
+  if (!isTRUE(file.info(todir)$isdir)) dir.create(todir, recursive=TRUE)
+  file.rename(from,to)
+}
+
+
+#' get_all_filenames: function to get all file names from a directory of .dxf files
+#' @param path path to the directory of .dxf files
+#' @return vector of filenames for all .dxf files in the specified directory
+#' @examples
+#' Usage example
+#' filenames<-get_all_filenames("~/path_to_files")
+#' @export
+get_all_filenames<-function(path){ #path to the directory of .dxf files
+  all_iso<-iso_read_continuous_flow(path)
+  # get just file names
+  all_file_info<-iso_get_file_info(all_iso)
+  all_file_names<-all_file_info$file_id
+}
+
+
+#' get_identifier_1_files: function to get filenames whose Identifier_1 data matches the one specified
+#' @param files vector of file names
+#' @param identifier_1 the name of the desired Identifier_1
+#' @param cores number of cores to use for the grepl function to search through the files vector
+#' @return dataframe of file names with the specified Identifier_1
+#' @examples
+#' Usage example
+#' identifier_files<-get_identifier_1_files(my_filenames,my_identifier_1)
+#' @export
+get_identifier_1_files<-function(files,identifier_1,cores=2){ #could use this func to loop through an identifier vec
+  identifier_1_files_ind<-pvec(seq_along(files),function(i)
+    grepl(identifier_1,files[i],fixed=T),mc.cores=cores)
+  # get the indices
+  identifier_1_files_ind<-which(identifier_1_files_ind) #which are TRUE
+  # get the identifier_1 file names
+  identifier_1_files<-files[identifier_1_files_ind]
+  i1.df<-as.data.frame(identifier_1_files)
+  colnames(i1.df)<-c(identifier_1)
+  return(i1.df)
+}
+
+
+#' get_raw_df: get the raw data from .dxf files as a dataframe
+#' @param files vector containing character strings of .dxf file names
+#' @return dataframe containing all raw data in the .dxf files
+#' @examples
+#' Usage example
+#' data_files<-c("170525_NaHCO3 L + NaCl L_.dxf","170525_NaHCO3 L + NaCl U_.dxf","170525_NaHCO3 L_.dxf","170525_NaHCO3 U + NaCl L_.dxf",
+#' "170525_NaHCO3 U + NaCl U_.dxf","170525_NaHCO3 U_.dxf")
+#' raw_dat<-get_raw_df(data_files)
+#' @export
+get_raw_df<-function(files){
+  num_files<-length(files)
+  msdat<-iso_read_continuous_flow(files[1:num_files])
+  raw_dat<- msdat %>% iso_get_raw_data()
+  raw_dat.df<-as.data.frame(raw_dat)
+}
+
+
+#' get_reference_values_no_ratio: get isotopic reference values as a dataframe
+#' @param files vector containing character strings of .dxf file names
+#' @return dataframe of reference values in the .dxf files
+#' @examples
+#' Usage example
+#' data_files<-c("170525_NaHCO3 L + NaCl L_.dxf","170525_NaHCO3 L + NaCl U_.dxf","170525_NaHCO3 L_.dxf","170525_NaHCO3 U + NaCl L_.dxf",
+#' "170525_NaHCO3 U + NaCl U_.dxf","170525_NaHCO3 U_.dxf")
+#' stand_no_ratio<-get_reference_values_no_ratio(data_files)
+#' @export
+get_reference_values_no_ratio <- function(files){
+  num_files<-length(files)
+  msdat<-iso_read_continuous_flow(files[1:num_files])
+  # reference delta values without ratio values
+  delta_no_ratio<-msdat %>% iso_get_standards(file_id:reference)
+  delta_no_ratio.df<-as.data.frame(delta_no_ratio)
+}
+
+
+#' get_reference_values_ratio: get isotopic reference values as a dataframe
+#' @param files vector containing character strings of .dxf file names
+#' @return dataframe of reference values in the .dxf files
+#' @examples
+#' Usage example
+#' data_files<-c("170525_NaHCO3 L + NaCl L_.dxf","170525_NaHCO3 L + NaCl U_.dxf","170525_NaHCO3 L_.dxf","170525_NaHCO3 U + NaCl L_.dxf",
+#' "170525_NaHCO3 U + NaCl U_.dxf","170525_NaHCO3 U_.dxf")
+#' stand_ratio<-get_reference_values_ratio(data_files)
+#' @export
+get_reference_values_ratio <- function(files){
+  num_files<-length(files)
+  msdat<-iso_read_continuous_flow(files[1:num_files])
+  # reference values with ratios
+  ref_with_ratios<-msdat %>% iso_get_standards()
+  ref_with_ratios.df<-as.data.frame(ref_with_ratios)
+}
+
+
+#' get_resistor_df: get resistor info for collection of .dxf files as a dataframe
+#' @param files vector containing character strings of .dxf file names
+#' @return dataframe of resistor info in the .dxf files
+#' @examples
+#' Usage example
+#' data_files<-c("170525_NaHCO3 L + NaCl L_.dxf","170525_NaHCO3 L + NaCl U_.dxf","170525_NaHCO3 L_.dxf","170525_NaHCO3 U + NaCl L_.dxf",
+#' "170525_NaHCO3 U + NaCl U_.dxf","170525_NaHCO3 U_.dxf")
+#' resist<-get_resistor_df(data_files)
+#' @export
+get_resistor_df<-function(files){
+  num_files<-length(files)
+  msdat<-iso_read_continuous_flow(files[1:num_files])
+  resistors<-iso_get_resistors(msdat)
+  resistors.df<-as.data.frame(resistors)
+}
+
+
+#' plot_ms:
+#' @param vendor_info.df dataframe of vendor info for only one experiment (may need to parse output from select_vendor_info())
+#' @param x_name name for desired x units for ms plot from vendor_info.df (default Rt)
+#' @param y_name name for desired y units for ms plot from vendor_info.df (default rIntensity_All)
+#' @return PlotSpec plot of the specified columns from vendor_info.df
+#' @examples
+#' Usgae example
+#' @export
+plot_ms<-function(vendor_info.df,x_name="Rt",y_name="rIntensity_All"){
+  x_ind<-which(colnames(vendor_info.df)==x_name)
+  x<-as.numeric(vendor_info.df[,x_ind])
+  y_ind<-which(colnames(vendor_info.df)==y_name)
+  y<-as.numeric(vendor_info.df[,y_ind])
+  plot_dat.df<-as.data.frame(cbind(x,y))
+  colnames(plot_dat.df)<-c(x_name,y_name)
+  PlotSpec(plot_dat.df)
+}
+
 #' read_summ: read and print a summary of mass spec data from a .dxf file
 #' @param filename character string of the name of the .dxf file of data
 #' @return summary table of file contents
@@ -31,9 +200,9 @@ select_file_info<-function(files){
       select = c(
         #rename?
         Identifier_1 = `Identifier 1`,
-      # select columns without renaming
+        # select columns without renaming
         `Analysis`, `Preparation`,
-      # select the time stamp and rename it to `Date & Time`
+        # select the time stamp and rename it to `Date & Time`
         Date_and_Time = file_datetime
       ),
       # explicitly allow for file specific rename (for the new ID column)
@@ -41,7 +210,7 @@ select_file_info<-function(files){
     )
   # convert from tibble to df
   file_info.df<-as.data.frame(file_info)
-  }
+}
 
 
 #' select_vendor_info: get selected vendor info with labeled experiment names for a collection of .dxf files
@@ -83,170 +252,14 @@ select_vendor_info<-function(files){
     name.vec<-c(name.vec,name)
   }
   vendor_info_select<-cbind(name.vec,peak_num,
-                 vendor_info$Start,
-                 vendor_info$Rt,
-                 vendor_info$End,
-                 vendor_info$`Intensity All`,
-                 vendor_info$`rIntensity All`,
-                 vendor_info$`d 13C/12C`,
-                 vendor_info$`d 18O/16O`)
+                            vendor_info$Start,
+                            vendor_info$Rt,
+                            vendor_info$End,
+                            vendor_info$`Intensity All`,
+                            vendor_info$`rIntensity All`,
+                            vendor_info$`d 13C/12C`,
+                            vendor_info$`d 18O/16O`)
   vendor_info_select.df<-as.data.frame(vendor_info_select)
   colnames(vendor_info_select.df)<-c("Identifier_1","Peak_Nr","Start","Rt","End","Intensity_All","rIntensity_All","d13C/12C","d18O/16O")#"Area_All"
   return(vendor_info_select.df)
 }
-
-
-#' get_raw_df: get the raw data from .dxf files as a dataframe
-#' @param files vector containing character strings of .dxf file names
-#' @return dataframe containing all raw data in the .dxf files
-#' @examples
-#' Usage example
-#' data_files<-c("170525_NaHCO3 L + NaCl L_.dxf","170525_NaHCO3 L + NaCl U_.dxf","170525_NaHCO3 L_.dxf","170525_NaHCO3 U + NaCl L_.dxf",
-#' "170525_NaHCO3 U + NaCl U_.dxf","170525_NaHCO3 U_.dxf")
-#' raw_dat<-get_raw_df(data_files)
-#' @export
-get_raw_df<-function(files){
-  num_files<-length(files)
-  msdat<-iso_read_continuous_flow(files[1:num_files])
-  raw_dat<- msdat %>% iso_get_raw_data()
-  raw_dat.df<-as.data.frame(raw_dat)
-}
-
-
-#' get_resistor_df: get resistor info for collection of .dxf files as a dataframe
-#' @param files vector containing character strings of .dxf file names
-#' @return dataframe of resistor info in the .dxf files
-#' @examples
-#' Usage example
-#' data_files<-c("170525_NaHCO3 L + NaCl L_.dxf","170525_NaHCO3 L + NaCl U_.dxf","170525_NaHCO3 L_.dxf","170525_NaHCO3 U + NaCl L_.dxf",
-#' "170525_NaHCO3 U + NaCl U_.dxf","170525_NaHCO3 U_.dxf")
-#' resist<-get_resistor_df(data_files)
-#' @export
-get_resistor_df<-function(files){
-  num_files<-length(files)
-  msdat<-iso_read_continuous_flow(files[1:num_files])
-  resistors<-iso_get_resistors(msdat)
-  resistors.df<-as.data.frame(resistors)
-}
-
-
-#' get_reference_values_ratio: get isotopic reference values as a dataframe
-#' @param files vector containing character strings of .dxf file names
-#' @return dataframe of reference values in the .dxf files
-#' @examples
-#' Usage example
-#' data_files<-c("170525_NaHCO3 L + NaCl L_.dxf","170525_NaHCO3 L + NaCl U_.dxf","170525_NaHCO3 L_.dxf","170525_NaHCO3 U + NaCl L_.dxf",
-#' "170525_NaHCO3 U + NaCl U_.dxf","170525_NaHCO3 U_.dxf")
-#' stand_ratio<-get_reference_values_ratio(data_files)
-#' @export
-get_reference_values_ratio <- function(files){
-  num_files<-length(files)
-  msdat<-iso_read_continuous_flow(files[1:num_files])
-  # reference values with ratios
-  ref_with_ratios<-msdat %>% iso_get_standards()
-  ref_with_ratios.df<-as.data.frame(ref_with_ratios)
-}
-
-
-#' get_reference_values_no_ratio: get isotopic reference values as a dataframe
-#' @param files vector containing character strings of .dxf file names
-#' @return dataframe of reference values in the .dxf files
-#' @examples
-#' Usage example
-#' data_files<-c("170525_NaHCO3 L + NaCl L_.dxf","170525_NaHCO3 L + NaCl U_.dxf","170525_NaHCO3 L_.dxf","170525_NaHCO3 U + NaCl L_.dxf",
-#' "170525_NaHCO3 U + NaCl U_.dxf","170525_NaHCO3 U_.dxf")
-#' stand_no_ratio<-get_reference_values_no_ratio(data_files)
-#' @export
-get_reference_values_no_ratio <- function(files){
-  num_files<-length(files)
-  msdat<-iso_read_continuous_flow(files[1:num_files])
-  # reference delta values without ratio values
-  delta_no_ratio<-msdat %>% iso_get_standards(file_id:reference)
-  delta_no_ratio.df<-as.data.frame(delta_no_ratio)
-}
-
-
-#' extract_rintensity_all_tsfeatures: extract time series features from rIntensity_All using tsfeatures
-#' @param rintensity_all.num numeric vector containing the rIntensity_All data
-#' @return dataframe containing the extracted tsfeatures of the rIntensity_All data
-#' @examples
-#' Usage Example
-#' feat<-extract_rintensity_all_tsfeatures(int_all_num)
-#' @export
-extract_rintensity_all_tsfeatures<-function(rintensity_all.num){
-  features.tib<-tsfeatures(rintensity_all.num,
-                           features=c("acf_features","arch_stat","crossing_points",
-                                      "entropy","flat_spots","heterogeneity",
-                                      "holt_parameters","hurst",
-                                      "lumpiness","max_kl_shift","max_level_shift",
-                                      "max_var_shift","nonlinearity",#"pacf_features",
-                                      #"stability",
-                                      #"stl_features",
-                                      #"unitroot_kpss",
-                                      #"unitroot_pp",
-                                      #"ac_9",
-                                      #"firstmin_ac",
-                                      #"firstzero_ac",
-                                      #"fluctanal_prop_r1",
-                                      "histogram_mode","localsimple_taures","motiftwo_entro3",
-                                      "outlierinclude_mdrmd","sampenc","sampen_first",
-                                      "std1st_der","trev_num", #,"spreadrandomlocal_meantaul"
-                                      "walker_propcross"))
-  features.df<-as.data.frame(features.tib)
-}
-
-
-#' plot_ms:
-#' @param vendor_info.df dataframe of vendor info for only one experiment (may need to parse output from select_vendor_info())
-#' @param x_name name for desired x units for ms plot from vendor_info.df (default Rt)
-#' @param y_name name for desired y units for ms plot from vendor_info.df (default rIntensity_All)
-#' @return PlotSpec plot of the specified columns from vendor_info.df
-#' @examples
-#' Usgae example
-#' @export
-plot_ms<-function(vendor_info.df,x_name="Rt",y_name="rIntensity_All"){
-  x_ind<-which(colnames(vendor_info.df)==x_name)
-  x<-as.numeric(vendor_info.df[,x_ind])
-  y_ind<-which(colnames(vendor_info.df)==yname)
-  y<-as.numeric(vendor_info.df[,y_ind])
-  plot_dat.df<-as.data.frame(cbind(x,y))
-  colnames(plot_dat.df)<-c(x_name,y_name)
-  PlotSpec(plot_dat.df)
-}
-
-
-#' get_all_filenames: function to get all file names from a directory of .dxf files
-#' @param path path to the directory of .dxf files
-#' @return vector of filenames for all .dxf files in the specified directory
-#' @examples
-#' Usage example
-#' filenames<-get_all_filenames("~/path_to_files")
-#' @export
-get_all_filenames<-function(path){ #path to the directory of .dxf files
-  all_iso<-iso_read_continuous_flow(path)
-  # get just file names
-  all_file_info<-iso_get_file_info(all_iso)
-  all_file_names<-all_file_info$file_id
-}
-
-#' get_identifier_1_files: function to get filenames whose Identifier_1 data matches the one specified
-#' @param files vector of file names
-#' @param identifier_1 the name of the desired Identifier_1
-#' @param cores number of cores to use for the grepl function to search through the files vector
-#' @return dataframe of file names with the specified Identifier_1
-#' @examples
-#' Usage example
-#' identifier_files<-get_identifier_1_files(my_filenames,my_identifier_1)
-#' @export
-get_identifier_1_files<-function(files,identifier_1,cores=2){ #could use this func to loop through an identifier vec
-  identifier_1_files_ind<-pvec(seq_along(files),function(i)
-    grepl(identifier_1,files[i],fixed=T),mc.cores=cores)
-  # get the indices
-  identifier_1_files_ind<-which(identifier_1_files_ind) #which are TRUE
-  # get the identifier_1 file names
-  identifier_1_files<-files[identifier_1_files_ind]
-  i1.df<-as.data.frame(identifier_1_files)
-  colnames(i1.df)<-c(identifier_1)
-  return(i1.df)
-}
-

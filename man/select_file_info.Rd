@@ -2,7 +2,7 @@
 % Please edit documentation in R/MLMSfunctions.R
 \name{select_file_info}
 \alias{select_file_info}
-\title{select_file_info: select specific info from collection of .dxf files (Identifier 1, Analysis, Preparation, file_datetime)}
+\title{select_file_info: select specific information from a collection of .dxf files (Identifier 1, Analysis, Preparation, file_datetime)}
 \usage{
 select_file_info(files)
 }
@@ -13,7 +13,7 @@ select_file_info(files)
 dataframe of file information - file_id, Identifier_1, Analysis, Preparation, Date_and_Time
 }
 \description{
-select_file_info: select specific info from collection of .dxf files (Identifier 1, Analysis, Preparation, file_datetime)
+select_file_info: select specific information from a collection of .dxf files (Identifier 1, Analysis, Preparation, file_datetime)
 }
 \examples{
 Usage example

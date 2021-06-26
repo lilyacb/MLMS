@@ -14,7 +14,7 @@ cha<-function(x,y){
 }
 
 
-#' move_Identitifier_1_files: function that copies all files with a specified identifier into a folder labeled with the Identifier_1 value
+#' move_Identifier_1_files: function that copies all files with a specified identifier into a folder labeled with the Identifier_1 value
 #' @param identifier_1_files files that contain the desired identifier
 #' @param path location of the file to be copied
 #' @param identifier_1 the identifier_1 of the files to be copied
@@ -99,7 +99,7 @@ get_all_filenames<-function(path){ #path to the directory of .dxf files
 #' @param start.vec numeric vector containing all peak start times
 #' @param end.vec numeric vector containing all peak end times
 #' @param time.vec numeric vector containing all the raw time.s data
-#' @param int.vec numeric vector continaing all the raw intentisty data (i.e. v44.mv, etc,)
+#' @param int.vec numeric vector continaing all the raw intentisty data (i.e. v44.mV, etc,)
 #' @return a vector containing the areas of each peak
 #' @examples
 #' Usage example
@@ -122,7 +122,7 @@ get_all_peak_areas<-function(start.vec,end.vec,time.vec,int.vec){
 #' Usage example
 #' get_identifier_1_files(my_filenames,my_identifier_1)
 #' @export
-get_identifier_1_files<-function(files,identifier_1,cores=2){ #could use this func to loop through an identifier vec
+get_identifier_1_files<-function(files,identifier_1,cores=2){
   identifier_1_files_ind<-pvec(seq_along(files),function(i)
     grepl(identifier_1,files[i],fixed=T),mc.cores=cores)
   # get the indices
@@ -230,14 +230,48 @@ peak_area<-function(start.t,end.t,time.vec,int.vec){
   return(peak.area)
 }
 
-#' plot_ms:
-#' @param vendor_info.df dataframe of vendor info for only one experiment (may need to parse output from select_vendor_info())
+
+#' plot_individual_peak: function to plot an individual peak in an experiment
+#' @param start.t start time of the peak
+#' @param end.t end time of the peak
+#' @param time.vec vector containing all time.s raw data
+#' @param int.vec vectoring containing the raw intensity data for a specified mass (i.e. v44.mV, etc.)
+#' @param peak_num the peak number
+#' @param v.mv vector containing the raw mV intensity data
+#' @examples
+#' Usage example
+#' plot_individual_peak(start1,end1,allt.s,allv44,"1","v44.mV")
+#' @export
+plot_individual_peak<-function(start.t,end.t,time.vec,int.vec,peak_num,v.mv){
+  peak.t<-c()
+  time.ind<-c()
+  # get peak times and indices
+  for(i in seq(1:length(time.vec))){
+    if((time.vec[i]>=start.t) && (time.vec[i]<=end.t)){
+      peak.t<-c(peak.t,time.vec[i])
+      time.ind<-c(time.ind,i)
+    }
+  }
+  # get peak intensities
+  peak.mv<-c()
+  for(i in seq(1:length(time.ind))){
+    peak.mv<-c(peak.mv,int.vec[time.ind[i]])
+  }
+  plot(peak.t,peak.mv,main=paste("peak_",peak_num,"_",v.mv,sep=""),type="l")
+  peak.df<-as.data.frame(cbind(peak.t,peak.mv))
+  colnames(peak.df)<-c("time","intensity")
+  return(peak.df)
+}
+
+
+#' plot_ms: Function to plot mass spec data
+#' @param vendor_info.df dataframe of vendor info for only one experiment
 #' @param x_name name for desired x units for ms plot from vendor_info.df (default Rt)
 #' @param y_name name for desired y units for ms plot from vendor_info.df (default rIntensity_All)
 #' @return PlotSpec plot of the specified columns from vendor_info.df
 #' @examples
 #' Usage example
-#'
+#' plot_ms("Rt","rIntensity_All")
 #' @export
 plot_ms<-function(vendor_info.df,x_name="Rt",y_name="rIntensity_All"){
   x_ind<-which(colnames(vendor_info.df)==x_name)
@@ -264,7 +298,7 @@ read_summ<-function(filename){
 }
 
 
-#' select_file_info: select specific info from collection of .dxf files (Identifier 1, Analysis, Preparation, file_datetime)
+#' select_file_info: select specific information from a collection of .dxf files (Identifier 1, Analysis, Preparation, file_datetime)
 #' @param files vector containing character strings of .dxf file names
 #' @return dataframe of file information - file_id, Identifier_1, Analysis, Preparation, Date_and_Time
 #' @examples

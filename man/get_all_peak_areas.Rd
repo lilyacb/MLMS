@@ -13,7 +13,7 @@ get_all_peak_areas(start.vec, end.vec, time.vec, int.vec)
 
 \item{time.vec}{numeric vector containing all the raw time.s data}
 
-\item{int.vec}{numeric vector continaing all the raw intentisty data (i.e. v44.mv, etc,)}
+\item{int.vec}{numeric vector continaing all the raw intentisty data (i.e. v44.mV, etc,)}
 }
 \value{
 a vector containing the areas of each peak

@@ -2,12 +2,12 @@
 % Please edit documentation in R/MLMSfunctions.R
 \name{plot_ms}
 \alias{plot_ms}
-\title{plot_ms:}
+\title{plot_ms: Function to plot mass spec data}
 \usage{
 plot_ms(vendor_info.df, x_name = "Rt", y_name = "rIntensity_All")
 }
 \arguments{
-\item{vendor_info.df}{dataframe of vendor info for only one experiment (may need to parse output from select_vendor_info())}
+\item{vendor_info.df}{dataframe of vendor info for only one experiment}
 
 \item{x_name}{name for desired x units for ms plot from vendor_info.df (default Rt)}
 
@@ -17,9 +17,9 @@ plot_ms(vendor_info.df, x_name = "Rt", y_name = "rIntensity_All")
 PlotSpec plot of the specified columns from vendor_info.df
 }
 \description{
-plot_ms:
+plot_ms: Function to plot mass spec data
 }
 \examples{
 Usage example
-
+plot_ms("Rt","rIntensity_All")
 }

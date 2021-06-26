@@ -14,8 +14,7 @@ cha<-function(x,y){
 }
 
 
-#' move_Identitifier_1_files: function that copies all files with a specified identifier
-#' into a folder labeled with the Identifier_1 value
+#' move_Identitifier_1_files: function that copies all files with a specified identifier into a folder labeled with the Identifier_1 value
 #' @param identifier_1_files files that contain the desired identifier
 #' @param path location of the file to be copied
 #' @param identifier_1 the identifier_1 of the files to be copied

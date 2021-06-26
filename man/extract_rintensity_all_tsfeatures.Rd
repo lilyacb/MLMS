@@ -17,5 +17,5 @@ extract_rintensity_all_tsfeatures: extract time series features from rIntensity_
 }
 \examples{
 Usage Example
-feat<-extract_rintensity_all_tsfeatures(int_all_num)
+extract_rintensity_all_tsfeatures(int_all_num)
 }

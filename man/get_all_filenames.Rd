@@ -17,5 +17,5 @@ get_all_filenames: function to get all file names from a directory of .dxf files
 }
 \examples{
 Usage example
-filenames<-get_all_filenames("~/path_to_files")
+get_all_filenames("~/path_to_files")
 }

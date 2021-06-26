@@ -20,5 +20,6 @@ PlotSpec plot of the specified columns from vendor_info.df
 plot_ms:
 }
 \examples{
-Usgae example
+Usage example
+
 }

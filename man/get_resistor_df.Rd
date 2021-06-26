@@ -17,7 +17,5 @@ get_resistor_df: get resistor info for collection of .dxf files as a dataframe
 }
 \examples{
 Usage example
-data_files<-c("170525_NaHCO3 L + NaCl L_.dxf","170525_NaHCO3 L + NaCl U_.dxf","170525_NaHCO3 L_.dxf","170525_NaHCO3 U + NaCl L_.dxf",
-"170525_NaHCO3 U + NaCl U_.dxf","170525_NaHCO3 U_.dxf")
-resist<-get_resistor_df(data_files)
+get_resistor_df(data_files)
 }

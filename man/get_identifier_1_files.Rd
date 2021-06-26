@@ -21,5 +21,5 @@ get_identifier_1_files: function to get filenames whose Identifier_1 data matche
 }
 \examples{
 Usage example
-identifier_files<-get_identifier_1_files(my_filenames,my_identifier_1)
+get_identifier_1_files(my_filenames,my_identifier_1)
 }

@@ -17,7 +17,5 @@ get_reference_values_ratio: get isotopic reference values as a dataframe
 }
 \examples{
 Usage example
-data_files<-c("170525_NaHCO3 L + NaCl L_.dxf","170525_NaHCO3 L + NaCl U_.dxf","170525_NaHCO3 L_.dxf","170525_NaHCO3 U + NaCl L_.dxf",
-"170525_NaHCO3 U + NaCl U_.dxf","170525_NaHCO3 U_.dxf")
-stand_ratio<-get_reference_values_ratio(data_files)
+get_reference_values_ratio(data_files)
 }

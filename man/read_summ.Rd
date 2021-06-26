@@ -17,5 +17,5 @@ read_summ: read and print a summary of mass spec data from a .dxf file
 }
 \examples{
 Usage example
-summ<-read_summ("170525_NaHCO3 L + NaCl L_.dxf")
+read_summ("170525_NaHCO3 L + NaCl L_.dxf")
 }

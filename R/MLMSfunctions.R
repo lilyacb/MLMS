@@ -1,11 +1,46 @@
 #### Functions for processing .dxf MS data files
 
+#' cha: function to find the area of a convex hull
+#' @param x dataframe of x values
+#' @param y dataframe of y values
+#' @return area of the polygon
+#' @examples
+#' Usage example
+#' cha(peak1t,peak1v)
+#' @export
+cha<-function(x,y){
+  i<-chull(x,y)
+  return(areapl(cbind(x[i],y[i])))
+}
+
+
+#' move_Identitifier_1_files: function that copies all files with a specified identifier
+#' into a folder labeled with the Identifier_1 value
+#' @param identifier_1_files files that contain the desired identifier
+#' @param path location of the file to be copied
+#' @param identifier_1 the identifier_1 of the files to be copied
+#' @examples
+#' Usage example
+#' copy_Identifier_1_files(identifier_1_d_files,pathc,identifier_1_d)
+#' @export
+copy_Identifier_1_files<-function(identifier_1_files,path,identifier_1){
+  num_files<-dim(identifier_1_files)[1]
+  for(i in seq(1:num_files)){
+    orig_dir<-paste(path,"/",identifier_1_files[i,],sep="")
+    orig.dir
+    new.dir<-paste(path,identifier_1,"/",identifier_1_files[i,],sep="")
+    new.dir
+    file_move(orig.dir,new.dir)
+  }
+}
+
+
 #' extract_rintensity_all_tsfeatures: extract time series features from rIntensity_All using tsfeatures
 #' @param rintensity_all.num numeric vector containing the rIntensity_All data
 #' @return dataframe containing the extracted tsfeatures of the rIntensity_All data
 #' @examples
 #' Usage Example
-#' feat<-extract_rintensity_all_tsfeatures(int_all_num)
+#' extract_rintensity_all_tsfeatures(int_all_num)
 #' @export
 extract_rintensity_all_tsfeatures<-function(rintensity_all.num){
   features.tib<-tsfeatures(rintensity_all.num,
@@ -39,8 +74,10 @@ extract_rintensity_all_tsfeatures<-function(rintensity_all.num){
 #' @export
 file_move<-function(from, to){
   todir <- dirname(to)
-  if (!isTRUE(file.info(todir)$isdir)) dir.create(todir, recursive=TRUE)
-  file.rename(from,to)
+  if (!isTRUE(file.info(todir)$isdir)){
+    dir.create(todir) # do not overwrite existing files
+  }
+  file.copy(from,to)
 }
 
 
@@ -49,7 +86,7 @@ file_move<-function(from, to){
 #' @return vector of filenames for all .dxf files in the specified directory
 #' @examples
 #' Usage example
-#' filenames<-get_all_filenames("~/path_to_files")
+#' get_all_filenames("~/path_to_files")
 #' @export
 get_all_filenames<-function(path){ #path to the directory of .dxf files
   all_iso<-iso_read_continuous_flow(path)
@@ -59,6 +96,24 @@ get_all_filenames<-function(path){ #path to the directory of .dxf files
 }
 
 
+#' get_all_peak_areas: function to get all peak areas in an experiment
+#' @param start.vec numeric vector containing all peak start times
+#' @param end.vec numeric vector containing all peak end times
+#' @param time.vec numeric vector containing all the raw time.s data
+#' @param int.vec numeric vector continaing all the raw intentisty data (i.e. v44.mv, etc,)
+#' @return a vector containing the areas of each peak
+#' @examples
+#' Usage example
+#' get_all_peak_areas(start.v1,end.v1,allt.s,allv44)
+#' @export
+get_all_peak_areas<-function(start.vec,end.vec,time.vec,int.vec){
+  all_areas<-c()
+  for(i in seq(1:length(start.vec))){
+    all_areas<-c(all_areas,peak_area(start.vec[i],end.vec[i],time.vec,int.vec))
+  }
+  return(all_areas)
+}
+
 #' get_identifier_1_files: function to get filenames whose Identifier_1 data matches the one specified
 #' @param files vector of file names
 #' @param identifier_1 the name of the desired Identifier_1
@@ -66,7 +121,7 @@ get_all_filenames<-function(path){ #path to the directory of .dxf files
 #' @return dataframe of file names with the specified Identifier_1
 #' @examples
 #' Usage example
-#' identifier_files<-get_identifier_1_files(my_filenames,my_identifier_1)
+#' get_identifier_1_files(my_filenames,my_identifier_1)
 #' @export
 get_identifier_1_files<-function(files,identifier_1,cores=2){ #could use this func to loop through an identifier vec
   identifier_1_files_ind<-pvec(seq_along(files),function(i)
@@ -86,8 +141,6 @@ get_identifier_1_files<-function(files,identifier_1,cores=2){ #could use this fu
 #' @return dataframe containing all raw data in the .dxf files
 #' @examples
 #' Usage example
-#' data_files<-c("170525_NaHCO3 L + NaCl L_.dxf","170525_NaHCO3 L + NaCl U_.dxf","170525_NaHCO3 L_.dxf","170525_NaHCO3 U + NaCl L_.dxf",
-#' "170525_NaHCO3 U + NaCl U_.dxf","170525_NaHCO3 U_.dxf")
 #' raw_dat<-get_raw_df(data_files)
 #' @export
 get_raw_df<-function(files){
@@ -103,9 +156,7 @@ get_raw_df<-function(files){
 #' @return dataframe of reference values in the .dxf files
 #' @examples
 #' Usage example
-#' data_files<-c("170525_NaHCO3 L + NaCl L_.dxf","170525_NaHCO3 L + NaCl U_.dxf","170525_NaHCO3 L_.dxf","170525_NaHCO3 U + NaCl L_.dxf",
-#' "170525_NaHCO3 U + NaCl U_.dxf","170525_NaHCO3 U_.dxf")
-#' stand_no_ratio<-get_reference_values_no_ratio(data_files)
+#' get_reference_values_no_ratio(data_files)
 #' @export
 get_reference_values_no_ratio <- function(files){
   num_files<-length(files)
@@ -121,9 +172,7 @@ get_reference_values_no_ratio <- function(files){
 #' @return dataframe of reference values in the .dxf files
 #' @examples
 #' Usage example
-#' data_files<-c("170525_NaHCO3 L + NaCl L_.dxf","170525_NaHCO3 L + NaCl U_.dxf","170525_NaHCO3 L_.dxf","170525_NaHCO3 U + NaCl L_.dxf",
-#' "170525_NaHCO3 U + NaCl U_.dxf","170525_NaHCO3 U_.dxf")
-#' stand_ratio<-get_reference_values_ratio(data_files)
+#' get_reference_values_ratio(data_files)
 #' @export
 get_reference_values_ratio <- function(files){
   num_files<-length(files)
@@ -139,9 +188,7 @@ get_reference_values_ratio <- function(files){
 #' @return dataframe of resistor info in the .dxf files
 #' @examples
 #' Usage example
-#' data_files<-c("170525_NaHCO3 L + NaCl L_.dxf","170525_NaHCO3 L + NaCl U_.dxf","170525_NaHCO3 L_.dxf","170525_NaHCO3 U + NaCl L_.dxf",
-#' "170525_NaHCO3 U + NaCl U_.dxf","170525_NaHCO3 U_.dxf")
-#' resist<-get_resistor_df(data_files)
+#' get_resistor_df(data_files)
 #' @export
 get_resistor_df<-function(files){
   num_files<-length(files)
@@ -151,13 +198,47 @@ get_resistor_df<-function(files){
 }
 
 
+#' peak_area: Function to calculate the area under a peak
+#' @param start.t start time of the peak
+#' @param end.t end time of the peak
+#' @param time.vec the raw time.s data
+#' @param int.vec the raw intensity data for a specified mass
+#' @return the area under the specified peak
+#' @examples
+#' Usage example
+#' peak_area(start1,end1,allt.s,allv44)
+#' @export
+peak_area<-function(start.t,end.t,time.vec,int.vec){
+  # get times for peak
+  peak.t<-c()
+  time.ind<-c()
+  # get peak times and indices
+  for(i in seq(1:length(time.vec))){
+    if((time.vec[i]>=start.t) && (time.vec[i]<=end.t)){
+      peak.t<-c(peak.t,time.vec[i])
+      time.ind<-c(time.ind,i)
+    }
+  }
+  # get peak intensities
+  peak.mv<-c()
+  for(i in seq(1:length(time.ind))){
+    peak.mv<-c(peak.mv,int.vec[time.ind[i]])
+  }
+  #plot(peak.t,peak.mv,type="l")
+  peak.df<-as.data.frame(cbind(peak.t,peak.mv))
+  colnames(peak.df)<-c("time","intensity")
+  peak.area<-cha(peak.t,peak.mv)
+  return(peak.area)
+}
+
 #' plot_ms:
 #' @param vendor_info.df dataframe of vendor info for only one experiment (may need to parse output from select_vendor_info())
 #' @param x_name name for desired x units for ms plot from vendor_info.df (default Rt)
 #' @param y_name name for desired y units for ms plot from vendor_info.df (default rIntensity_All)
 #' @return PlotSpec plot of the specified columns from vendor_info.df
 #' @examples
-#' Usgae example
+#' Usage example
+#'
 #' @export
 plot_ms<-function(vendor_info.df,x_name="Rt",y_name="rIntensity_All"){
   x_ind<-which(colnames(vendor_info.df)==x_name)
@@ -169,12 +250,13 @@ plot_ms<-function(vendor_info.df,x_name="Rt",y_name="rIntensity_All"){
   PlotSpec(plot_dat.df)
 }
 
+
 #' read_summ: read and print a summary of mass spec data from a .dxf file
 #' @param filename character string of the name of the .dxf file of data
 #' @return summary table of file contents
 #' @examples
 #' Usage example
-#' summ<-read_summ("170525_NaHCO3 L + NaCl L_.dxf")
+#' read_summ("170525_NaHCO3 L + NaCl L_.dxf")
 #' @export
 read_summ<-function(filename){
   msdat<-iso_read_continuous_flow(filename)
@@ -188,9 +270,7 @@ read_summ<-function(filename){
 #' @return dataframe of file information - file_id, Identifier_1, Analysis, Preparation, Date_and_Time
 #' @examples
 #' Usage example
-#' data_files<-c("170525_NaHCO3 L + NaCl L_.dxf","170525_NaHCO3 L + NaCl U_.dxf","170525_NaHCO3 L_.dxf","170525_NaHCO3 U + NaCl L_.dxf",
-#' "170525_NaHCO3 U + NaCl U_.dxf","170525_NaHCO3 U_.dxf")
-#' file_info<-select_file_info(data_files)
+#' select_file_info(data_files)
 #' @export
 select_file_info<-function(files){
   num_files<-length(files)
@@ -219,9 +299,7 @@ select_file_info<-function(files){
 #' @return dataframe of vendor information with rows labeled with experiment name (Identifier 1)
 #' @examples
 #' Usage Example
-#' data_files<-c("170525_NaHCO3 L + NaCl L_.dxf","170525_NaHCO3 L + NaCl U_.dxf","170525_NaHCO3 L_.dxf","170525_NaHCO3 U + NaCl L_.dxf",
-#' "170525_NaHCO3 U + NaCl U_.dxf","170525_NaHCO3 U_.dxf")
-#' vend_info<-select_vendor_info(data_files)
+#' select_vendor_info(data_files)
 #' @export
 select_vendor_info<-function(files){
   num_files<-length(files)

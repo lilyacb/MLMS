@@ -19,7 +19,5 @@ select_vendor_info: get selected vendor info with labeled experiment names for a
 }
 \examples{
 Usage Example
-data_files<-c("170525_NaHCO3 L + NaCl L_.dxf","170525_NaHCO3 L + NaCl U_.dxf","170525_NaHCO3 L_.dxf","170525_NaHCO3 U + NaCl L_.dxf",
-"170525_NaHCO3 U + NaCl U_.dxf","170525_NaHCO3 U_.dxf")
-vend_info<-select_vendor_info(data_files)
+select_vendor_info(data_files)
 }

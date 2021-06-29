@@ -285,6 +285,55 @@ plot_ms<-function(vendor_info.df,x_name="Rt",y_name="rIntensity_All"){
 }
 
 
+#' qc_num_peaks: Function that checks for the correct number of peaks
+#' @param vend.df dataframe of vendor data that contains Peak_Nr
+#' @return Boolean that indicates whether the expected number of peaks is present
+#' @examples
+#' Usage example
+#' ("Good" CO2 peak will have all 3 masses stacked nicely on top of each other)
+#' qc_num_peaks(vend1.df)
+#' @export
+qc_CO2_num_peaks<-function(vend.df){
+  num_peaks<-as.numeric(vend.df$Peak_Nr)
+  if(length(num_peaks==15) | length(num_peaks==16)){
+    peaks_qc<-TRUE
+    print(paste("number of peaks:",length(num_peaks)))
+  }
+  else{
+    peaks_qc<-FALSE
+  }
+  return(peaks_qc)
+}
+qc_num_peaks<-function(vend.df,expected_num_peaks=16){
+  num_peaks<-as.numeric(vend.df$Peak_Nr)
+  if(length(num_peaks==15) | length(num_peaks==16)){
+    peaks_qc<-TRUE
+    print(paste("number of peaks:",length(num_peaks)))
+  }
+  else{
+    peaks_qc<-FALSE
+  }
+  return(peaks_qc)
+}
+
+
+#' qc_peaks_present: Function to quality check for peak presence
+#' @param start.times vector of start times for each peak in the data
+#' @return Boolean that indicates whether peaks are present
+#' @examples
+#' Usage example
+#' qc_peaks_present(start_times.vec)
+#' @export
+qc_peaks_present<-function(start.times){
+  if(length(start.times)>=0){ # What do start and end look like if there are no peaks? blank or NA?
+    peaks=TRUE
+  }
+  else{
+    peaks=FALSE
+  }
+  return(peaks)
+}
+
 #' read_summ: read and print a summary of mass spec data from a .dxf file
 #' @param filename character string of the name of the .dxf file of data
 #' @return summary table of file contents

@@ -17,5 +17,5 @@ get_raw_df: get the raw data from .dxf files as a dataframe
 }
 \examples{
 Usage example
-raw_dat<-get_raw_df(data_files)
+get_raw_df(data_files)
 }

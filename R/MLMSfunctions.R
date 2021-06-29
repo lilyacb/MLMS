@@ -14,26 +14,6 @@ cha<-function(x,y){
 }
 
 
-#' move_Identifier_1_files: function that copies all files with a specified identifier into a folder labeled with the Identifier_1 value
-#' @param identifier_1_files files that contain the desired identifier
-#' @param path location of the file to be copied
-#' @param identifier_1 the identifier_1 of the files to be copied
-#' @examples
-#' Usage example
-#' copy_Identifier_1_files(identifier_1_d_files,pathc,identifier_1_d)
-#' @export
-copy_Identifier_1_files<-function(identifier_1_files,path,identifier_1){
-  num_files<-dim(identifier_1_files)[1]
-  for(i in seq(1:num_files)){
-    orig_dir<-paste(path,"/",identifier_1_files[i,],sep="")
-    orig.dir
-    new.dir<-paste(path,identifier_1,"/",identifier_1_files[i,],sep="")
-    new.dir
-    file_move(orig.dir,new.dir)
-  }
-}
-
-
 #' extract_rintensity_all_tsfeatures: extract time series features from rIntensity_All using tsfeatures
 #' @param rintensity_all.num numeric vector containing the rIntensity_All data
 #' @return dataframe containing the extracted tsfeatures of the rIntensity_All data
@@ -74,9 +54,9 @@ extract_rintensity_all_tsfeatures<-function(rintensity_all.num){
 file_move<-function(from, to){
   todir <- dirname(to)
   if (!isTRUE(file.info(todir)$isdir)){
-    dir.create(todir) # do not overwrite existing files
+    dir.create(todir)
   }
-  file.copy(from,to)
+  file.rename(from,to)
 }
 
 
@@ -113,6 +93,7 @@ get_all_peak_areas<-function(start.vec,end.vec,time.vec,int.vec){
   return(all_areas)
 }
 
+
 #' get_identifier_1_files: function to get filenames whose Identifier_1 data matches the one specified
 #' @param files vector of file names
 #' @param identifier_1 the name of the desired Identifier_1
@@ -140,7 +121,7 @@ get_identifier_1_files<-function(files,identifier_1,cores=2){
 #' @return dataframe containing all raw data in the .dxf files
 #' @examples
 #' Usage example
-#' raw_dat<-get_raw_df(data_files)
+#' get_raw_df(data_files)
 #' @export
 get_raw_df<-function(files){
   num_files<-length(files)
@@ -194,6 +175,26 @@ get_resistor_df<-function(files){
   msdat<-iso_read_continuous_flow(files[1:num_files])
   resistors<-iso_get_resistors(msdat)
   resistors.df<-as.data.frame(resistors)
+}
+
+
+#' move_Identifier_1_files: function that copies all files with a specified identifier into a folder labeled with the Identifier_1 value
+#' @param identifier_1_files files that contain the desired identifier
+#' @param path location of the file to be copied
+#' @param identifier_1 the identifier_1 of the files to be copied
+#' @examples
+#' Usage example
+#' move_Identifier_1_files(identifier_1_d_files,pathc,identifier_1_d)
+#' @export
+move_Identifier_1_files<-function(identifier_1_files,path,identifier_1){
+  num_files<-dim(identifier_1_files)[1]
+  for(i in seq(1:num_files)){
+    orig_dir<-paste(path,"/",identifier_1_files[i,],sep="")
+    #orig.dir
+    new_dir<-paste(path,identifier_1,"/",identifier_1_files[i,],sep="")
+    #new.dir
+    file_move(orig_dir,new_dir)
+  }
 }
 
 

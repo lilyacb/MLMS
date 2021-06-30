@@ -440,11 +440,11 @@ select_vendor_info<-function(files){
 
 
 ####
-##' sort_by_identifier_1: Function that sorts all .dxf files in a path into folders labeled with the Identifier_1 values
-##' @param path path to files to be sorted
-###' @examples
-##' Usage example
-##' @export
+#' sort_by_identifier_1: Function that sorts all .dxf files in a path into folders labeled with the Identifier_1 values
+#' @param path path to files to be sorted
+#' @examples
+#' Usage example
+#' @export
 sort_by_identifier_1<-function(path){
   all_filenames<-get_all_filenames(path)
   un_identifiers<-get_unique_identifiers(path,all_filenames)

@@ -255,6 +255,22 @@ peak_area<-function(start.t,end.t,time.vec,int.vec){
   return(peak.area)
 }
 
+#' plot_all_peaks: Function that plots every peak in an experiment in a separate graph
+#' @param start.v numeric vector of start times for all the peaks in the experiment
+#' @param end.v numeric vector of end times for all the peaks in the experiment
+#' @param t.s numeric vector time.s from raw data
+#' @param v.mV numeric vector of raw voltages (i.e. v44.mV, v45.mV, v46.mV, etc.)
+#' @param v.name the name of raw voltage column
+#' @examples
+#' Usage example
+#' plot_all_peaks(start.v1,end.v1,allt.s,allv44,"v44.mV")
+#' @export
+plot_all_peaks<-function(start.v,end.v,t.s,v.mV,v.name){
+  for(i in seq(1:length(start.v))){
+    plot_individual_peak(start.v[i],end.v[i],t.s,v.mV,i,v.name)
+  }
+}
+
 
 #' plot_individual_peak: function to plot an individual peak in an experiment
 #' @param start.t start time of the peak

@@ -178,7 +178,31 @@ get_resistor_df<-function(files){
 }
 
 
-#' move_Identifier_1_files: function that copies all files with a specified identifier into a folder labeled with the Identifier_1 value
+#' get_unique_identifiers: Function to find all of the different Identifier_1 labels in a directory of .dxf files
+#' @param all_Identifier_1_labels vector of the Identifier_1 labels of each .dxf file in the directory
+#' @return
+#' Usage example
+#' get_unique_identifiers(double_component_Identifier_1s)
+#' @export
+get_unique_identifiers<-function(path,filenames){
+  #filenames<-get_all_filenames(path)
+  vendor.info<-select_file_info(filenames)
+  all_identifiers<-vendor.info$Identifier_1
+  num_all_identifiers<-length(all_identifiers)
+  #num_all_identifiers
+  unique_identifiers<-c()
+  for(i in seq(1:num_all_identifiers)){
+    curr_identifier<-all_identifiers[i]
+    curr_identifier
+    if(sum(which(unique_identifiers==curr_identifier))==0){
+      unique_identifiers<-c(unique_identifiers,curr_identifier)
+    }
+  }
+  return(unique_identifiers)
+}
+
+
+#' move_identifier_1_files: function that copies all files with a specified identifier into a folder labeled with the Identifier_1 value
 #' @param identifier_1_files files that contain the desired identifier
 #' @param path location of the file to be copied
 #' @param identifier_1 the identifier_1 of the files to be copied
@@ -186,7 +210,7 @@ get_resistor_df<-function(files){
 #' Usage example
 #' move_Identifier_1_files(identifier_1_d_files,pathc,identifier_1_d)
 #' @export
-move_Identifier_1_files<-function(identifier_1_files,path,identifier_1){
+move_identifier_1_files<-function(identifier_1_files,path,identifier_1){
   num_files<-dim(identifier_1_files)[1]
   for(i in seq(1:num_files)){
     orig_dir<-paste(path,"/",identifier_1_files[i,],sep="")
@@ -293,22 +317,11 @@ plot_ms<-function(vendor_info.df,x_name="Rt",y_name="rIntensity_All"){
 #' ("Good" CO2 peak will have all 3 masses stacked nicely on top of each other)
 #' qc_num_peaks(vend1.df)
 #' @export
-qc_CO2_num_peaks<-function(vend.df){
+qc_num_peaks<-function(vend.df){
   num_peaks<-as.numeric(vend.df$Peak_Nr)
   if(length(num_peaks==15) | length(num_peaks==16)){
     peaks_qc<-TRUE
-    print(paste("number of peaks:",length(num_peaks)))
-  }
-  else{
-    peaks_qc<-FALSE
-  }
-  return(peaks_qc)
-}
-qc_num_peaks<-function(vend.df,expected_num_peaks=16){
-  num_peaks<-as.numeric(vend.df$Peak_Nr)
-  if(length(num_peaks==15) | length(num_peaks==16)){
-    peaks_qc<-TRUE
-    print(paste("number of peaks:",length(num_peaks)))
+    #print(paste("number of peaks:",length(num_peaks)))
   }
   else{
     peaks_qc<-FALSE
@@ -423,4 +436,23 @@ select_vendor_info<-function(files){
   vendor_info_select.df<-as.data.frame(vendor_info_select)
   colnames(vendor_info_select.df)<-c("Identifier_1","Peak_Nr","Start","Rt","End","Intensity_All","rIntensity_All","d13C/12C","d18O/16O")#"Area_All"
   return(vendor_info_select.df)
+}
+
+
+####
+##' sort_by_identifier_1: Function that sorts all .dxf files in a path into folders labeled with the Identifier_1 values
+##' @param path path to files to be sorted
+###' @examples
+##' Usage example
+##' @export
+sort_by_identifier_1<-function(path){
+  all_filenames<-get_all_filenames(path)
+  un_identifiers<-get_unique_identifiers(path,all_filenames)
+  num_identifiers<-length(un_identifiers)
+  path_ID<-paste(path,"/",sep="")
+  for(i in seq(1:num_identifiers)){
+    # get all files with un_identifier[i]
+    I1_files<-get_identifier_1_files(all_filenames,un_identifiers[i])
+    move_identifier_1_files(I1_files,path_ID,un_identifiers[i])
+  }
 }

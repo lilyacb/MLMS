@@ -14,15 +14,15 @@ cha<-function(x,y){
 }
 
 
-#' extract_rintensity_all_tsfeatures: extract time series features from rIntensity_All using tsfeatures
+#' extract_tsfeatures: extract time series features from intensity data using tsfeatures
 #' @param rintensity_all.num numeric vector containing the rIntensity_All data
 #' @return dataframe containing the extracted tsfeatures of the rIntensity_All data
 #' @examples
 #' Usage Example
 #' extract_rintensity_all_tsfeatures(int_all_num)
 #' @export
-extract_rintensity_all_tsfeatures<-function(rintensity_all.num){
-  features.tib<-tsfeatures(rintensity_all.num,
+extract_tsfeatures<-function(intensity.data){
+  features.tib<-tsfeatures(intensity.data,
                            features=c("acf_features","arch_stat","crossing_points",
                                       "entropy","flat_spots","heterogeneity",
                                       "holt_parameters","hurst",
@@ -60,14 +60,14 @@ file_move<-function(from, to){
 }
 
 
-#' get_all_filenames: function to get all file names from a directory of .dxf files
+#' all_filenames: function to get all file names from a directory of .dxf files
 #' @param path path to the directory of .dxf files
 #' @return vector of filenames for all .dxf files in the specified directory
 #' @examples
 #' Usage example
-#' get_all_filenames("~/path_to_files")
+#' all_filenames("~/path_to_files")
 #' @export
-get_all_filenames<-function(path){ #path to the directory of .dxf files
+all_filenames<-function(path){ #path to the directory of .dxf files
   all_iso<-iso_read_continuous_flow(path)
   # get just file names
   all_file_info<-iso_get_file_info(all_iso)
@@ -75,35 +75,36 @@ get_all_filenames<-function(path){ #path to the directory of .dxf files
 }
 
 
-#' get_all_peak_areas: function to get all peak areas in an experiment
+#' all_peak_areas: function to get all peak areas in an experiment
 #' @param start.vec numeric vector containing all peak start times
 #' @param end.vec numeric vector containing all peak end times
 #' @param time.vec numeric vector containing all the raw time.s data
 #' @param int.vec numeric vector continaing all the raw intentisty data (i.e. v44.mV, etc,)
-#' @return a vector containing the areas of each peak
+#' @return a vector containing the areas of each peak in V*s
 #' @examples
 #' Usage example
-#' get_all_peak_areas(start.v1,end.v1,allt.s,allv44)
+#' all_peak_areas(start.v1,end.v1,allt.s,allv44)
 #' @export
-get_all_peak_areas<-function(start.vec,end.vec,time.vec,int.vec){
+all_peak_areas<-function(start.vec,end.vec,time.vec,int.vec){
   all_areas<-c()
   for(i in seq(1:length(start.vec))){
     all_areas<-c(all_areas,peak_area(start.vec[i],end.vec[i],time.vec,int.vec))
   }
-  return(all_areas)
+  all_areas_Vs<-all_areas/1000
+  return(all_areas_Vs)
 }
 
 
-#' get_identifier_1_files: function to get filenames whose Identifier_1 data matches the one specified
+#' identifier_1_files: function to get filenames whose Identifier_1 data matches the one specified
 #' @param files vector of file names
 #' @param identifier_1 the name of the desired Identifier_1
 #' @param cores number of cores to use for the grepl function to search through the files vector
 #' @return dataframe of file names with the specified Identifier_1
 #' @examples
 #' Usage example
-#' get_identifier_1_files(my_filenames,my_identifier_1)
+#' identifier_1_files(my_filenames,my_identifier_1)
 #' @export
-get_identifier_1_files<-function(files,identifier_1,cores=2){
+identifier_1_files<-function(files,identifier_1,cores=2){
   identifier_1_files_ind<-pvec(seq_along(files),function(i)
     grepl(identifier_1,files[i],fixed=T),mc.cores=cores)
   # get the indices
@@ -116,29 +117,29 @@ get_identifier_1_files<-function(files,identifier_1,cores=2){
 }
 
 
-#' get_raw_df: get the raw data from .dxf files as a dataframe
-#' @param files vector containing character strings of .dxf file names
-#' @return dataframe containing all raw data in the .dxf files
+#'raw_data: get the raw data from the specified .dxf file as a dataframe
+#' @param file character string defining the file to extract raw data from
+#' @return dataframe containing the raw data in the .dxf file
 #' @examples
 #' Usage example
-#' get_raw_df(data_files)
+#' raw_data(data_files)
 #' @export
-get_raw_df<-function(files){
-  num_files<-length(files)
-  msdat<-iso_read_continuous_flow(files[1:num_files])
+raw_data<-function(file){#files
+  #num_files<-length(files)
+  msdat<-iso_read_continuous_flow(file)#files[1:num_files]
   raw_dat<- msdat %>% iso_get_raw_data()
   raw_dat.df<-as.data.frame(raw_dat)
 }
 
 
-#' get_reference_values_no_ratio: get isotopic reference values as a dataframe
+#' reference_values_no_ratio: get isotopic reference values as a dataframe
 #' @param files vector containing character strings of .dxf file names
 #' @return dataframe of reference values in the .dxf files
 #' @examples
 #' Usage example
-#' get_reference_values_no_ratio(data_files)
+#' reference_values_no_ratio(data_files)
 #' @export
-get_reference_values_no_ratio <- function(files){
+reference_values_no_ratio <- function(files){
   num_files<-length(files)
   msdat<-iso_read_continuous_flow(files[1:num_files])
   # reference delta values without ratio values
@@ -147,14 +148,14 @@ get_reference_values_no_ratio <- function(files){
 }
 
 
-#' get_reference_values_ratio: get isotopic reference values as a dataframe
+#' reference_values_ratio: get isotopic reference values as a dataframe
 #' @param files vector containing character strings of .dxf file names
 #' @return dataframe of reference values in the .dxf files
 #' @examples
 #' Usage example
-#' get_reference_values_ratio(data_files)
+#' reference_values_ratio(data_files)
 #' @export
-get_reference_values_ratio <- function(files){
+reference_values_ratio <- function(files){
   num_files<-length(files)
   msdat<-iso_read_continuous_flow(files[1:num_files])
   # reference values with ratios
@@ -163,14 +164,14 @@ get_reference_values_ratio <- function(files){
 }
 
 
-#' get_resistor_df: get resistor info for collection of .dxf files as a dataframe
+#' resistor_data: get resistor info for collection of .dxf files as a dataframe
 #' @param files vector containing character strings of .dxf file names
 #' @return dataframe of resistor info in the .dxf files
 #' @examples
 #' Usage example
-#' get_resistor_df(data_files)
+#' resistor_df(data_files)
 #' @export
-get_resistor_df<-function(files){
+resistor_data<-function(files){
   num_files<-length(files)
   msdat<-iso_read_continuous_flow(files[1:num_files])
   resistors<-iso_get_resistors(msdat)
@@ -178,13 +179,13 @@ get_resistor_df<-function(files){
 }
 
 
-#' get_unique_identifiers: Function to find all of the different Identifier_1 labels in a directory of .dxf files
+#' unique_identifiers: Function to find all of the different Identifier_1 labels in a directory of .dxf files
 #' @param all_Identifier_1_labels vector of the Identifier_1 labels of each .dxf file in the directory
 #' @return
 #' Usage example
-#' get_unique_identifiers(double_component_Identifier_1s)
+#' unique_identifiers(double_component_Identifier_1s)
 #' @export
-get_unique_identifiers<-function(path,filenames){
+unique_identifiers<-function(path,filenames){
   #filenames<-get_all_filenames(path)
   vendor.info<-select_file_info(filenames)
   all_identifiers<-vendor.info$Identifier_1
@@ -272,7 +273,7 @@ plot_all_peaks<-function(start.v,end.v,t.s,v.mV,v.name){
 }
 
 
-#' plot_individual_peak: function to plot an individual peak in an experiment
+#' plot_individual_peaks: function to plot an individual peak in an experiment
 #' @param start.t start time of the peak
 #' @param end.t end time of the peak
 #' @param time.vec vector containing all time.s raw data
@@ -281,9 +282,9 @@ plot_all_peaks<-function(start.v,end.v,t.s,v.mV,v.name){
 #' @param v.mv vector containing the raw mV intensity data
 #' @examples
 #' Usage example
-#' plot_individual_peak(start1,end1,allt.s,allv44,"1","v44.mV")
+#' plot_individual_peaks(start1,end1,allt.s,allv44,"1","v44.mV")
 #' @export
-plot_individual_peak<-function(start.t,end.t,time.vec,int.vec,peak_num,v.mv){
+plot_individual_peaks<-function(start.t,end.t,time.vec,int.vec,peak_num,v.mv){
   peak.t<-c()
   time.ind<-c()
   # get peak times and indices
@@ -305,7 +306,7 @@ plot_individual_peak<-function(start.t,end.t,time.vec,int.vec,peak_num,v.mv){
 }
 
 
-#' plot_ms: Function to plot mass spec data
+#' plot_ms: Function to plot mass spec data from vendor table
 #' @param vendor_info.df dataframe of vendor info for only one experiment
 #' @param x_name name for desired x units for ms plot from vendor_info.df (default Rt)
 #' @param y_name name for desired y units for ms plot from vendor_info.df (default rIntensity_All)
@@ -354,6 +355,7 @@ qc_num_peaks<-function(vend.df){
 #' qc_peaks_present(start_times.vec)
 #' @export
 qc_peaks_present<-function(start.times){
+  start.times<-as.numeric(start.times)
   if(length(start.times)>=0){ # What do start and end look like if there are no peaks? blank or NA?
     peaks=TRUE
   }
@@ -363,28 +365,63 @@ qc_peaks_present<-function(start.times){
   return(peaks)
 }
 
-#' read_summ: read and print a summary of mass spec data from a .dxf file
+#' read_summary: read and print a summary of mass spec data from a .dxf file
 #' @param filename character string of the name of the .dxf file of data
 #' @return summary table of file contents
 #' @examples
 #' Usage example
 #' read_summ("170525_NaHCO3 L + NaCl L_.dxf")
 #' @export
-read_summ<-function(filename){
+read_summary<-function(filename){
   msdat<-iso_read_continuous_flow(filename)
   summ<-summary(msdat)
   print(summ)
 }
 
+# ***
+#If 16 peaks present, remove the 1st sample peak at 276 s
+# that typically has some contamination, return new vend.df without that peak
+remove_276<-function(vend.df){
+  num_peaks<-as.numeric(length(vend.df$Peak_Nr))
+  start.times<-as.numeric(vend.df$Start)
+  Rts<-as.numeric(vend.df$Rt)
+  peak_nums<-as.numeric(vend.df$Nr)
+  end.times<-as.numeric(vend.df$End)
+  print(paste(num_peaks," peaks detected.",sep=""))
+  if(num_peaks==16){
+    # look for a peak around 276
+    # search through Rts
+    for(i in seq(1:length(Rts))){
+      if(abs(Rts[i]-276)<5){
+        peak_276_Nr<-i
+        print("276 peak detected")
+        newVend.df<-vend.df[-(peak_276_Nr),]
+        start.276<-start.times[i]
+        end.276<-end.times[i]
+        print(paste("Peak number", peak_276_Nr,"removed from",round(start.276,2),
+                    "s to",round(end.276,2),"s with Rt:",round(Rts[i],2)))
+      }
+    }
+  }
+  else if(num_peaks==15){
+    print("15 peaks detected, no peaks removed")
+  }
+  else{
+    print("Neither 15 nor 16 peaks detected--quality check peak number")
+  }
+  return(newVend.df)
+}
 
-#' select_file_info: select specific information from a collection of .dxf files (Identifier 1, Analysis, Preparation, file_datetime)
+
+
+#' file_info: select specific information from a collection of .dxf files (Identifier 1, Analysis, Preparation, file_datetime)
 #' @param files vector containing character strings of .dxf file names
 #' @return dataframe of file information - file_id, Identifier_1, Analysis, Preparation, Date_and_Time
 #' @examples
 #' Usage example
-#' select_file_info(data_files)
+#' file_info(data_files)
 #' @export
-select_file_info<-function(files){
+file_info<-function(files){
   num_files<-length(files)
   msdat<-iso_read_continuous_flow(files[1:num_files])
   file_info<-msdat %>%
@@ -405,7 +442,7 @@ select_file_info<-function(files){
 }
 
 
-#' select_vendor_info: get selected vendor info with labeled experiment names for a collection of .dxf files
+#' vendor_info: get selected vendor info with labeled experiment names for a collection of .dxf files
 #' (Identifier 1, Nr., Start, Rt, End, Intensity All, rIntensity All, d13C/12C, d18O/16O)
 #' @param files vector containing character strings of .dxf file names
 #' @return dataframe of vendor information with rows labeled with experiment name (Identifier 1)
@@ -413,7 +450,7 @@ select_file_info<-function(files){
 #' Usage Example
 #' select_vendor_info(data_files)
 #' @export
-select_vendor_info<-function(files){
+vendor_info<-function(files){
   num_files<-length(files)
   msdat<-iso_read_continuous_flow(files[1:num_files])
   file.info<-msdat %>% iso_get_file_info()
@@ -447,10 +484,23 @@ select_vendor_info<-function(files){
                             vendor_info$End,
                             vendor_info$`Intensity All`,
                             vendor_info$`rIntensity All`,
+                            vendor_info$`Ampl 44`,
+                            vendor_info$`Ampl 45`,
+                            vendor_info$`Ampl 46`,
+                            #vendor_info$`Intensity 44`,
+                            #vendor_info$`rIntensity 44`,
+                            #vendor_info$`Intensity 45`,
+                            #vendor_info$`rIntensity 45`,
+                            #vendor_info$`Intensity 46`,
+                            #vendor_info$`rIntensity 46`,
                             vendor_info$`d 13C/12C`,
                             vendor_info$`d 18O/16O`)
   vendor_info_select.df<-as.data.frame(vendor_info_select)
-  colnames(vendor_info_select.df)<-c("Identifier_1","Peak_Nr","Start","Rt","End","Intensity_All","rIntensity_All","d13C/12C","d18O/16O")#"Area_All"
+  colnames(vendor_info_select.df)<-c("Identifier_1","Peak_Nr","Start","Rt","End","Intensity_All",
+                                     "rIntensity_All",#"Intensity_44","rIntensity_44",
+                                     #"Intensity_45","rIntensity_45","Intensity_46","rIntensity_46",
+                                     "Ampl_44","Ampl_45","Ampl_46",
+                                     "d13C/12C","d18O/16O")#"Area_All"
   return(vendor_info_select.df)
 }
 

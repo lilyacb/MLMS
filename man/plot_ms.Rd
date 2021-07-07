@@ -2,7 +2,7 @@
 % Please edit documentation in R/MLMSfunctions.R
 \name{plot_ms}
 \alias{plot_ms}
-\title{plot_ms: Function to plot mass spec data}
+\title{plot_ms: Function to plot mass spec data from vendor table}
 \usage{
 plot_ms(vendor_info.df, x_name = "Rt", y_name = "rIntensity_All")
 }
@@ -17,7 +17,7 @@ plot_ms(vendor_info.df, x_name = "Rt", y_name = "rIntensity_All")
 PlotSpec plot of the specified columns from vendor_info.df
 }
 \description{
-plot_ms: Function to plot mass spec data
+plot_ms: Function to plot mass spec data from vendor table
 }
 \examples{
 Usage example

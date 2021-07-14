@@ -341,6 +341,7 @@ peak_area_trap<-function(start.t,end.t,time.vec,int.vec){
 # (13)
 #' peakTimes: function
 #' @param Int.mat matrix of intensity values within the desired interval
+#' @param z.thresh z-value threshold for ThresholdAlgo
 #' @param time.interval time values in the desired interval
 #' @return vector of average peak start times as found by ThresholdingAlgo and groupPickedTimes
 #' @examples

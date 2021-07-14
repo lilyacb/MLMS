@@ -4,12 +4,14 @@
 \alias{peakTimes}
 \title{peakTimes: function}
 \usage{
-peakTimes(Int.mat, time.interval, reactionLabel)
+peakTimes(Int.mat, time.interval, z.thresh, reactionLabel)
 }
 \arguments{
 \item{Int.mat}{matrix of intensity values within the desired interval}
 
 \item{time.interval}{time values in the desired interval}
+
+\item{z.thresh}{z-value threshold for ThresholdAlgo}
 }
 \value{
 vector of average peak start times as found by ThresholdingAlgo and groupPickedTimes

@@ -349,10 +349,11 @@ peak_area_trap<-function(start.t,end.t,time.vec,int.vec){
 #' @export
 # Int.mat: intensity values within the desired time interval
 # time.interval: time values in the desired interval
-peakTimes<-function(Int.mat,time.interval){
+peakTimes<-function(Int.mat,time.interval,reactionLabel){ # ** add title?
   testAlgo<-ThresholdingAlgo(Int.mat,lag=10,threshold=5,influence=0.5)
   #(testAlgo$signals)
   plot(Int.mat,type="l")
+  title(main=paste("Peak times detected: ",reactionLabel,sep=""))
   x<-which(testAlgo$signals==1) # what about -1?
   y<-rep(0,length(x))
   points(x,y,col="red")

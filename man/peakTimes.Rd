@@ -4,7 +4,7 @@
 \alias{peakTimes}
 \title{peakTimes: function}
 \usage{
-peakTimes(Int.mat, time.interval)
+peakTimes(Int.mat, time.interval, reactionLabel)
 }
 \arguments{
 \item{Int.mat}{matrix of intensity values within the desired interval}

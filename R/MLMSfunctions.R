@@ -26,7 +26,7 @@
 # (24) reference_values_ratio(files)
 # (25) remove_276(vend.df)
 # (26) resistor_data(files)
-# (27) sample_peaks(vend.df)
+# (27) sample_peaks_vend(vend.df)
 # (28) sort_by_identifier_1(path)
 # (29) ThresholdingAlgo(y,lag,threshold,influence)
 # (30) vendor_info(files)
@@ -353,7 +353,7 @@ peakTimes<-function(Int.mat,time.interval){
   testAlgo<-ThresholdingAlgo(Int.mat,lag=10,threshold=5,influence=0.5)
   #(testAlgo$signals)
   plot(Int.mat,type="l")
-  x<-which(testAlgo$signals==1)
+  x<-which(testAlgo$signals==1) # what about -1?
   y<-rep(0,length(x))
   points(x,y,col="red")
   timesPicked<-time.interval[x]
@@ -670,16 +670,16 @@ resistor_data<-function(files){
 
 
 # (27)
-#' sample_peaks: function to grab the vendor info for the peaks at expected sample peak times
+#' sample_peaks_vend: function to grab the vendor info for the peaks at expected sample peak times
 #' @param vend.df vendor info dataframe of all peaks
 #' @param start.sample approximate expected start time for sample peaks  (default 326s)
 #' @param stop.sample approximate expected stop time for sample peaks (default 825s)
 #' @return vendor table for just the (sample) peaks from the given start and stop times
 #' @examples
 #' Usage Example
-#' sample_peaks(no276Vend1.df)
+#' sample_peaks_vend(no276Vend1.df,326,825)
 #' @export
-sample_peaks<-function(vend.df,start.sample=326,stop.sample=825){
+sample_peaks_vend<-function(vend.df,start.sample=326,stop.sample=825){
   #vend.df<-newVend1.df
   num_peaks<-as.numeric(length(vend.df$Peak_Nr))
   #num_peaks

@@ -14,4 +14,5 @@ sort_by_identifier_1: Function that sorts all .dxf files in a path into folders 
 }
 \examples{
 Usage example
+sort_by_identifier_1("~lily/Desktop/Europa MLMS/Europa_Data/Europa double comp")
 }

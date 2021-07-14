@@ -4,7 +4,7 @@
 \alias{plot_ms}
 \title{plot_ms: Function to plot mass spec data from vendor table}
 \usage{
-plot_ms(vendor_info.df, x_name = "Rt", y_name = "rIntensity_All")
+plot_ms(vendor_info.df, x_name = "Rt", y_name = "Intensity_All")
 }
 \arguments{
 \item{vendor_info.df}{dataframe of vendor info for only one experiment}
@@ -21,5 +21,5 @@ plot_ms: Function to plot mass spec data from vendor table
 }
 \examples{
 Usage example
-plot_ms("Rt","rIntensity_All")
+plot_ms("Rt","Intensity_All")
 }

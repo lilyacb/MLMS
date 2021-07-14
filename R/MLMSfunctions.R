@@ -24,8 +24,8 @@
 # (22) read_summary(filename)
 # (23) reference_values_no_ratio(files)
 # (24) reference_values_ratio(files)
-# (25) resistor_data(files)
-# (26) remove_276(vend.df)
+# (25) remove_276(vend.df)
+# (26) resistor_data(files)
 # (27) sample_peaks(vend.df)
 # (28) sort_by_identifier_1(path)
 # (29) ThresholdingAlgo(y,lag,threshold,influence)
@@ -62,7 +62,7 @@ all_filenames<-function(path){ #path to the directory of .dxf files
 all_peak_areas_poly<-function(start.vec,end.vec,time.vec,int.vec){
   all_areas<-c()
   for(i in seq(1:length(start.vec))){
-    all_areas<-c(all_areas,peak_area(start.vec[i],end.vec[i],time.vec,int.vec))
+    all_areas<-c(all_areas,peak_area_poly(start.vec[i],end.vec[i],time.vec,int.vec))
   }
   all_areas_Vs<-all_areas/1000
   return(all_areas_Vs)
@@ -247,7 +247,7 @@ identifier_1_files<-function(files,identifier_1,cores=2){
 
 
 # (10)
-#' move_identifier_1_files: function that copies all files with a specified identifier into a folder labeled with the Identifier_1 value
+#' move_identifier_1_files: function that moves all files with a specified identifier into a folder labeled with the Identifier_1 value
 #' @param identifier_1_files files that contain the desired identifier
 #' @param path location of the file to be copied
 #' @param identifier_1 the identifier_1 of the files to be copied
@@ -447,6 +447,7 @@ plot_ms<-function(vendor_info.df,x_name="Rt",y_name="Intensity_All"){
 #' @export
 qc_num_vendPeaks<-function(vend.df,expectedPeakNum1=15,expectedPeakNum2=16){
   num_peaks<-as.numeric(vend.df$Peak_Nr)
+  print(paste("Number of peaks in vendor table: ",length(num_peaks),sep=""))
   if(length(num_peaks==expectedPeakNum1) | length(num_peaks==expectedPeakNum2)){
     peaks_qc<-TRUE
     #print(paste("number of peaks:",length(num_peaks)))
@@ -492,7 +493,7 @@ qc_peaks_present<-function(start.times){
 #'                 expectedStartSamples=start.v1[7:15],samplePeakTimes=peakTimes)
 #' @export
 qc_samplePeaks<-function(intensity.mat,time.interval,expectedNum.samplePeaks,expectedStartSamples,samplePeakTimes){
-  peakTimes<-PeakTimes(intensity.mat,time.interval)
+  peakTimes<-peakTimes(intensity.mat,time.interval)
   samplePeaks<-c()
   if(length(peakTimes)==expectedNum.samplePeaks){
     peaks_qc<-TRUE
@@ -624,22 +625,6 @@ reference_values_ratio <- function(files){
 
 
 # (25)
-#' resistor_data: get resistor info for collection of .dxf files as a dataframe
-#' @param files vector containing character strings of .dxf file names
-#' @return dataframe of resistor info in the .dxf files
-#' @examples
-#' Usage example
-#' resistor_df(data_files)
-#' @export
-resistor_data<-function(files){
-  num_files<-length(files)
-  msdat<-iso_read_continuous_flow(files[1:num_files])
-  resistors<-iso_get_resistors(msdat)
-  resistors.df<-as.data.frame(resistors)
-}
-
-
-# (26)
 #' remove_276: function to remove the (1st sample) peak at 276 which often has some contamination for CO2
 #' @param vend.df dataframe of full vendor table data
 #' @return new vend.df without the 276 peak data
@@ -653,31 +638,35 @@ remove_276<-function(vend.df){
   Rts<-as.numeric(vend.df$Rt)
   peak_nums<-as.numeric(vend.df$Nr)
   end.times<-as.numeric(vend.df$End)
-  print(paste(num_peaks," peaks detected.",sep=""))
-  #if(num_peaks==16){
-    # look for a peak around 276
-    # search through Rts
-    for(i in seq(1:length(Rts))){
-      if(abs(Rts[i]-276)<5){
-        peak_276_Nr<-i
-        print("276 peak detected")
-        newVend.df<-vend.df[-(peak_276_Nr),]
-        start.276<-start.times[i]
-        end.276<-end.times[i]
-        print(paste("Peak number", peak_276_Nr,"removed from",round(start.276,2),
-                    "s to",round(end.276,2),"s with Rt:",round(Rts[i],2)))
-      }
+  for(i in seq(1:length(Rts))){
+    if(abs(Rts[i]-276)<5){
+      peak_276_Nr<-i
+      print("276 peak detected")
+      newVend.df<-vend.df[-(peak_276_Nr),]
+      start.276<-start.times[i]
+      end.276<-end.times[i]
+      print(paste("Peak number", peak_276_Nr,"removed from",round(start.276,2),
+                  "s to",round(end.276,2),"s with Rt:",round(Rts[i],2)))
     }
-  #}
-  #else if(num_peaks==15){
-  #  print("15 peaks detected, no peaks removed")
-  #}
-  #else{
-  #  print("Neither 15 nor 16 peaks detected--quality check peak number")
-  #}
+  }
   return(newVend.df)
 }
 
+
+# (26)
+#' resistor_data: get resistor info for collection of .dxf files as a dataframe
+#' @param files vector containing character strings of .dxf file names
+#' @return dataframe of resistor info in the .dxf files
+#' @examples
+#' Usage example
+#' resistor_df(data_files)
+#' @export
+resistor_data<-function(files){
+  num_files<-length(files)
+  msdat<-iso_read_continuous_flow(files[1:num_files])
+  resistors<-iso_get_resistors(msdat)
+  resistors.df<-as.data.frame(resistors)
+}
 
 
 # (27)

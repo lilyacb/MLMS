@@ -2,7 +2,7 @@
 % Please edit documentation in R/MLMSfunctions.R
 \name{qc_peaks_present}
 \alias{qc_peaks_present}
-\title{qc_peaks_present: Function to quality check for peak presence}
+\title{qc_peaks_present: Function to check for peak presence}
 \usage{
 qc_peaks_present(start.times)
 }
@@ -13,7 +13,7 @@ qc_peaks_present(start.times)
 Boolean that indicates whether peaks are present
 }
 \description{
-qc_peaks_present: Function to quality check for peak presence
+qc_peaks_present: Function to check for peak presence
 }
 \examples{
 Usage example

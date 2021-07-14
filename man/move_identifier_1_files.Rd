@@ -2,7 +2,7 @@
 % Please edit documentation in R/MLMSfunctions.R
 \name{move_identifier_1_files}
 \alias{move_identifier_1_files}
-\title{move_identifier_1_files: function that copies all files with a specified identifier into a folder labeled with the Identifier_1 value}
+\title{move_identifier_1_files: function that moves all files with a specified identifier into a folder labeled with the Identifier_1 value}
 \usage{
 move_identifier_1_files(identifier_1_files, path, identifier_1)
 }
@@ -14,7 +14,7 @@ move_identifier_1_files(identifier_1_files, path, identifier_1)
 \item{identifier_1}{the identifier_1 of the files to be copied}
 }
 \description{
-move_identifier_1_files: function that copies all files with a specified identifier into a folder labeled with the Identifier_1 value
+move_identifier_1_files: function that moves all files with a specified identifier into a folder labeled with the Identifier_1 value
 }
 \examples{
 Usage example

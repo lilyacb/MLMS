@@ -11,7 +11,7 @@ identifier_1_files(files, identifier_1, cores = 2)
 
 \item{identifier_1}{the name of the desired Identifier_1}
 
-\item{cores}{number of cores to use for the grepl function to search through the files vector}
+\item{cores}{number of cores to use for the grepl function to search through the files vector (default=2)}
 }
 \value{
 dataframe of file names with the specified Identifier_1

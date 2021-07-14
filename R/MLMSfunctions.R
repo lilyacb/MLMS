@@ -641,7 +641,7 @@ resistor_data<-function(files){
 
 # (26)
 #' remove_276: function to remove the (1st sample) peak at 276 which often has some contamination for CO2
-#' @param vend.df
+#' @param vend.df dataframe of full vendor table data
 #' @return new vend.df without the 276 peak data
 #' @examples
 #' Usage Example

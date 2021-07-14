@@ -7,7 +7,7 @@
 extract_tsfeatures(intensity.data)
 }
 \arguments{
-\item{rintensity_all.num}{numeric vector containing the rIntensity_All data}
+\item{intensity.data}{numeric vector containing the rIntensity_All data}
 }
 \value{
 dataframe containing the extracted tsfeatures of the rIntensity_All data
@@ -17,5 +17,5 @@ extract_tsfeatures: extract time series features from intensity data using tsfea
 }
 \examples{
 Usage Example
-extract_rintensity_all_tsfeatures(int_all_num)
+extract_tsfeatures(int_all_num)
 }

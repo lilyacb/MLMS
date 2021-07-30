@@ -92,8 +92,7 @@
 # (30) qc_peaks_vend(start.times) -
 #         check for peak presence
 #
-# (31) qc_samplePeaks(intensity.mat,time.interval,expectedNum.samplePeaks,
-#                     expectedStartSamples,samplePeakTimes,label) -
+# (31) qc_samplePeaks(intensity.mat,time.interval,expectedNum.samplePeaks,expectedStartSamples,samplePeakTimes,label) -
 #         test whether expected number of sample peaks are present and if they occur at expected times
 #
 # (32) raw_data(file) -

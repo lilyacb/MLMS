@@ -117,7 +117,7 @@
 #         remove the (1st sample) peak at 276 which often has some contamination for CO2
 #
 # (39) resistor_data(files) -
-#          get resistor info for .dxf files as a dataframe
+#          get resistor info for .dxf files
 #
 # (40) sample_peaks_pre_process(refTimesOutput,vend.df)
 #         separate out sample peaks data (without any processing like flush peak removal)
@@ -141,24 +141,23 @@
 #         gets sample peak data for internal standards quality check
 #
 # (47) stand_lm(acceptedMeas.df) -
-#         perform the linear regression for the internal standards quality check (creates plot)
+#         perform the linear regression for the internal standards quality check (and plot)
 #
 # (48) ThresholdingAlgo(y,lag,threshold,influence) -
 #         peak detection algorithm (uses z-scores) to get peak (signal) start times
 #
 # (49) trap_area_allPks(raw.df,vend.df,mV.rawName) -
-#         calculate area of all peaks in an experiment via trapz (wrapper function for all_PA_trap)
+#         calculate area of all peaks in an experiment via trapz
 #
 # (50)  unique_identifiers(filenames) -
 #         get all of the different identifier_1 labels in a set of files
 #
 # (51) vendor_info(file) -
-#         get selected vendor info for a .dxf file: Identifier 1, Nr., Start, Rt, End, Intensity All,
-#         rIntensity All, Ampl_44, Ampl_45, Ampl_46, d13C/12C, d18O/16O)
+#         get selected vendor info for a .dxf file: Identifier_1, Peak_Nr, Start, Rt, End, Intensity_All,rIntensity_All,
+#         Ampl_44,Ampl_45,Ampl_46,d13C/12C,d18O/16O
 #
 # (52) vendor_info_all(files) -
 #         get vendor table data from several .dxf files
-#
 #
 #########################################################################
 

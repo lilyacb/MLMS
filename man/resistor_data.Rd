@@ -2,7 +2,7 @@
 % Please edit documentation in R/MLMSfunctions.R
 \name{resistor_data}
 \alias{resistor_data}
-\title{resistor_data: get resistor info for collection of .dxf files as a dataframe}
+\title{resistor_data: get resistor info for .dxf files as a dataframe}
 \usage{
 resistor_data(files)
 }
@@ -13,7 +13,7 @@ resistor_data(files)
 dataframe of resistor info in the .dxf files
 }
 \description{
-resistor_data: get resistor info for collection of .dxf files as a dataframe
+resistor_data: get resistor info for .dxf files as a dataframe
 }
 \examples{
 Usage example

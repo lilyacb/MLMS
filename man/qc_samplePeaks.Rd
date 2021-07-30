@@ -9,7 +9,8 @@ qc_samplePeaks(
   time.interval,
   expectedNum.samplePeaks,
   expectedStartSamples,
-  samplePeakTimes
+  samplePeakTimes,
+  label
 )
 }
 \arguments{

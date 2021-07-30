@@ -2,7 +2,7 @@
 % Please edit documentation in R/MLMSfunctions.R
 \name{reference_values_ratio}
 \alias{reference_values_ratio}
-\title{reference_values_ratio: get isotopic reference values as a dataframe}
+\title{reference_values_ratio: get isotopic reference values including ratios}
 \usage{
 reference_values_ratio(files)
 }
@@ -13,7 +13,7 @@ reference_values_ratio(files)
 dataframe of reference values in the .dxf files
 }
 \description{
-reference_values_ratio: get isotopic reference values as a dataframe
+reference_values_ratio: get isotopic reference values including ratios
 }
 \examples{
 Usage example

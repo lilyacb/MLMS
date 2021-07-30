@@ -2,7 +2,7 @@
 % Please edit documentation in R/MLMSfunctions.R
 \name{plot_all_peaks}
 \alias{plot_all_peaks}
-\title{plot_all_peaks: Function that plots every peak in an experiment in a separate graph}
+\title{plot_all_peaks: Function that plots every peak in an experiment in a separate graph (in shared panel)}
 \usage{
 plot_all_peaks(start.v, end.v, t.s, v.mV, v.name)
 }
@@ -18,7 +18,7 @@ plot_all_peaks(start.v, end.v, t.s, v.mV, v.name)
 \item{v.name}{the name of raw voltage column}
 }
 \description{
-plot_all_peaks: Function that plots every peak in an experiment in a separate graph
+plot_all_peaks: Function that plots every peak in an experiment in a separate graph (in shared panel)
 }
 \examples{
 Usage example

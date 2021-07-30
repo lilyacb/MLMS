@@ -2,7 +2,7 @@
 % Please edit documentation in R/MLMSfunctions.R
 \name{ThresholdingAlgo}
 \alias{ThresholdingAlgo}
-\title{ThresholdingAlgo: function based on dispersion
+\title{ThresholdingAlgo: function based on dispersion to peak peak start times in time series data
 Code from: Robust peak detection algorithm (using z-scores)
 https://stackoverflow.com/questions/22583391/peak-signal-detection-in-realtime-timeseries-data?page=1&tab=votes#tab-top}
 \usage{
@@ -21,7 +21,7 @@ ThresholdingAlgo(y, lag, threshold, influence)
 list of "signals", "avgFilter", "stdFilter" - signal times (signals) are of the most interest for MS purposes
 }
 \description{
-ThresholdingAlgo: function based on dispersion
+ThresholdingAlgo: function based on dispersion to peak peak start times in time series data
 Code from: Robust peak detection algorithm (using z-scores)
 https://stackoverflow.com/questions/22583391/peak-signal-detection-in-realtime-timeseries-data?page=1&tab=votes#tab-top
 }

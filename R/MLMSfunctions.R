@@ -38,7 +38,7 @@
 # (12) find_files_by_analysis_num(standards.Iso,analysisNum.vec) -
 #         get filenames of files with specified analysis numbers
 #
-# (13) find_expected_times(peaks_times.list) -
+# (13) find_expected_times(peaks_times.list,expNumPks=c(15,16)) -
 #         find average values for Start, Rt and End times
 #
 # (14) generic_plot_all_raw(raw.list) -
@@ -65,11 +65,8 @@
 # (21) peak_area_trap(start.t,end.t,time.vec,int.vec) -
 #         find the area of a peak using the integration trapezoidal rule (via trapz)
 #
-# (22) peak_times_check<-function(vend.df,expectedPeak.num=5, diff.t=10,
-#                         expectedStart=c(27.1700, 67.0054, 166.5660, 206.4920, 839.8108),
-#                         expectedRt=c(47.3803, 87.1809, 186.7485, 226.5142, 858.3770),
-#                         expectedEnd=c(50.5014, 90.3577, 189.8695, 229.7189, 861.7279)) -
-#         checks whether peaks occur at the expected times (default reference, can be sample peaks)
+# (22) peak_times_check<-function(vend.df,expectedPeak.num=5, diff.t=10,expectedStart,expectedRt,expectedEnd) -
+#         check whether peaks occur at the expected times
 #
 # (23) peak_times_pick(Int.mat,time.interval,z.thresh,reactionLabel) -
 #         find the approximate peak start times
@@ -108,10 +105,7 @@
 # (34) read_summary(filename) -
 #         read and print a summary of data from a .dxf file
 #
-# (35) reference_times_check(vend.df,expectedPeak.num=5, diff.t=10,
-#                           expectedStart=c(27.1700, 67.0054, 166.5660, 206.4920, 839.8108),
-#                           expectedRt=c(47.3803, 87.1809, 186.7485, 226.5142, 858.3770),
-#                           expectedEnd=c(50.5014, 90.3577, 189.8695, 229.7189, 861.7279)) -
+# (35) reference_times_check(vend.df,expectedPeak.num=5, diff.t=10, expectedStart,expectedRt,expectedEnd) -
 #         determine if the expected number and peak times of reference peaks are present; return reference vendor data
 #
 # (36) reference_values_no_ratio(files) -
@@ -129,8 +123,7 @@
 # (40) sample_peaks_pre_process(refTimesOutput,vend.df)
 #         separate out sample peaks data (without any processing like flush peak removal)
 #
-# (41) sample_peaks_process<-function(refTimesOutput,vend.df,flushExpT=135,flushTint=10,
-#                               firstSampExpT=275,firstSampTint=10) -
+# (41) sample_peaks_process<-function(refTimesOutput,vend.df,flushExpT=135,flushTint=10,firstSampExpT=275,firstSampTint=10) -
 #         remove flush peak if present and 1st sample peak
 #
 # (42) sample_peaks_vend(vend.df,start.sample=326,stop.sample=825) -

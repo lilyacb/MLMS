@@ -1,4 +1,4 @@
-################################## Functions for processing .dxf MS data files ############################
+################################## Functions for MLMS ############################
 
 # Functions in this file
 #

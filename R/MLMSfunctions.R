@@ -222,7 +222,6 @@ all_PA_trap<-function(start.vec,end.vec,time.vec,int.vec,pk.Nrs){
 #' allStand_d18O.list[[3]]<-LW_d18O.list
 #' AvgSD_d18O<-avg_sd_d18O_standards(allStand_d18O.list)
 #' @export
-allStandards_d18O.list=allStand_d18O.list
 avg_sd_d18O_standards<-function(allStandards_d18O.list,standNames=c("L1","H1","LW"),standAcceptedVals.vec=c(-8.55,4.85,-3.85),accStandRatioSD=c(0.2,0.2,0.2)){
   # make df for avgs (avgs of all d18O in all files for particular standard)
   standAccepted.mat<-matrix(standAcceptedVals.vec,ncol=1)

@@ -137,11 +137,11 @@
 # (45)  standards_input_list(standardPaths.vec,standardAnalysisNums.df)
 #         create input list for internal standards quality check
 #
-# (46) standardInputProc(path,standardAnalysisNums.vec) -
-#         gets sample peak data for internal standards quality check
-#
-# (47) stand_lm(acceptedMeas.df) -
+# (46) stand_lm(acceptedMeas.df) -
 #         perform the linear regression for the internal standards quality check (and plot)
+#
+# (47) standardInputProc(path,standardAnalysisNums.vec) -
+#         gets sample peak data for internal standards quality check
 #
 # (48) ThresholdingAlgo(y,lag,threshold,influence) -
 #         peak detection algorithm (uses z-scores) to get peak (signal) start times
@@ -222,13 +222,14 @@ all_PA_trap<-function(start.vec,end.vec,time.vec,int.vec,pk.Nrs){
 #' allStand_d18O.list[[3]]<-LW_d18O.list
 #' AvgSD_d18O<-avg_sd_d18O_standards(allStand_d18O.list)
 #' @export
+allStandards_d18O.list=allStand_d18O.list
 avg_sd_d18O_standards<-function(allStandards_d18O.list,standNames=c("L1","H1","LW"),standAcceptedVals.vec=c(-8.55,4.85,-3.85),accStandRatioSD=c(0.2,0.2,0.2)){
   # make df for avgs (avgs of all d18O in all files for particular standard)
   standAccepted.mat<-matrix(standAcceptedVals.vec,ncol=1)
   standAccepted.df<-as.data.frame(standAccepted.mat)
   # start df -- will add average of all measured values
   d18OstandVals_Avgs.df<-data.frame(matrix(rep(NA,6),ncol=2))
-  colnames(d18OstandVals_Avgs.df)<-c("accepted_d18O/16O","measured_d18O/16O")
+  colnames(d18OstandVals_Avgs.df)<-c("accepted_d18O16O","measured_d18O16O")
   rownames(d18OstandVals_Avgs.df)<-standNames
   d18OstandVals_Avgs.df[,1]<-standAccepted.df
 
@@ -237,7 +238,7 @@ avg_sd_d18O_standards<-function(allStandards_d18O.list,standNames=c("L1","H1","L
   SDAccepted.df<-as.data.frame(SDAccepted.mat)
   # start df -- will add SD of all measured values
   d18OstandVals_SDs.df<-data.frame(matrix(rep(NA,6),ncol=2))
-  colnames(d18OstandVals_SDs.df)<-c("acceptable_SD_d18O/16O","calculated_SD_d18O/16O")
+  colnames(d18OstandVals_SDs.df)<-c("acceptable_SD_d18O16O","calculated_SD_d18O16O")
   rownames(d18OstandVals_SDs.df)<-standNames
   d18OstandVals_SDs.df[,1]<-accStandRatioSD
   # initialize lists for return vals
@@ -251,7 +252,7 @@ avg_sd_d18O_standards<-function(allStandards_d18O.list,standNames=c("L1","H1","L
     # for the different standards
     d18OFile.mat<-matrix(rep(NA,list.len*3),ncol=3)
     d18OFile.df<-as.data.frame(d18OFile.mat)
-    colnames(d18OFile.df)<-c("file_id","avg_d18O/16O","sd_d18O/16O")
+    colnames(d18OFile.df)<-c("file_id","avg_d18O16O","sd_d18O16O")
     numSampDFs<-length(d18O.list[[i]])
     alld18O.vec<-c()
     for(j in seq(1,numSampDFs)){
@@ -279,11 +280,11 @@ avg_sd_d18O_standards<-function(allStandards_d18O.list,standNames=c("L1","H1","L
     # avg of all d18O in files for given standard
     d18OstandAvg<-mean(alld18O.vec)
     # put in df to return
-    d18OstandVals_Avgs.df$measured[i]<-d18OstandAvg
+    d18OstandVals_Avgs.df$`measured_d18O16O`[i]<-d18OstandAvg
 
     # SD
     sdAllStandFiles<-sd(alld18O.vec)
-    d18OstandVals_SDs.df$calculated_SD[i]<-sdAllStandFiles
+    d18OstandVals_SDs.df$`calculated_SD_d18O16O`[i]<-sdAllStandFiles
 
     # return d18O.df in list
     ret_files_d18.list[[i]]<-d18OFile.df
@@ -475,14 +476,20 @@ check_picked_and_vendor_peaks<-function(vend.df,int.mat,time.vec,z.thresh=5,grap
 #' LWstandFiles<-find_files_by_analysis_num(LWiso,LWstandardAnalysisNum)
 #' LW_d18O.list<-d18O_samples_list(LWstandardFileNames)
 #' @export
-d18O_samples_list<-function(standardFileNames){
+d18O_samples_list<-function(standardFileNames,expPk.num=5,exp.df){
+  # get expected times
+  expSt.vec<-exp.df$Expected_Start
+  expEnd.vec<-exp.df$Expected_End
+  expRt.vec<-exp.df$Expected_Rt
+
   # get vendor data and d1O values
   isoVend<-vendor_info_all(standardFileNames)
   d18Osample.list<-list()
   numSampleVend<-length(isoVend)
   for(i in seq(1,numSampleVend)){
     # get sample peaks
-    refTC<-reference_times_check(isoVend[[i]])
+    refTC<-reference_times_check(isoVend[[i]],expectedPeak.num=expPk.num,expectedStart=expSt.vec,
+                                 expectedRt=expRt.vec,expectedEnd=expEnd.vec)
     sampleVend<-sample_peaks_process(refTC,isoVend[[i]])
     # get d18O/d16O data
     sample.d18O<-as.numeric(sampleVend$`d18O/16O`)
@@ -1399,13 +1406,13 @@ read_summary<-function(filename){
 #' Usage example
 #' refTC<-reference_times_check(vi.list[[1]])
 #' @export
-reference_times_check<-function(vend.df,expectedPeak.num, diff.t=10,expectedStart,expectedRt,expectedEnd){
+reference_times_check<-function(vend.df,expectedPeak.num, diff.t=10,expectedStart=c(27.1700,67.0193,166.5653,206.4920,843.3227),
+                                expectedRt=c(47.3888,87.1840,186.7608,226.5096,863.5029),expectedEnd=c(50.4929,90.3422,189.8572,229.6987,866.6069)){
   refs.list<-list()
   peak.nums<-as.numeric(vend.df$Peak_Nr)
   num.peaks<-length(peak.nums)
   # times from vendor table
   start.times<-as.numeric(vend.df$Start)
-  start.times
   Rts<-as.numeric(vend.df$Rt)
   end.times<-as.numeric(vend.df$End)
   # intialize loop data
@@ -1794,11 +1801,11 @@ sort_by_identifier_1<-function(path){
 #'standPaths.vec<-c(L1path,H1path,LWpath)
 #' allStand_d18O.list<-standards_input_list(standPaths.vec,standAnalysisNums.df)
 #' @export
-standards_input_list<-function(standardPaths.vec,standardAnalysisNums.df){ # orders of elems need to corresp in args
+standards_input_list<-function(standardPaths.vec,standardAnalysisNums.df,exp.df){ # orders of elems need to corresp in args
   allStand_d18O.list<-list()
   numStands<-length(standardAnalysisNums.df[,1])
   for(i in seq(1:numStands)){
-    stand_d18O.list<-standardInputProc(standardPaths.vec[i],standardsAnalysisNums.df[,i])
+    stand_d18O.list<-standardInputProc(standardPaths.vec[i],standardAnalysisNums.df[,i],exp.df=exp.df)
     # add to return list
     allStand_d18O.list[[i]]<-stand_d18O.list
   }
@@ -1807,26 +1814,6 @@ standards_input_list<-function(standardPaths.vec,standardAnalysisNums.df){ # ord
 
 
 # (46)
-#' standardInputProc: function that gets sample peak and d18O/16O data for internal standards quality check
-#' @param path path to the .dxf internal standards experiment files
-#' @param standardAnalysisNums.vec numeric vector of analysis numbers
-#' @return list of dataframes containing d18O/16O vendor data for each file
-#' @examples
-#' Usage Example
-#' stand_d18O.list<-standardInputProc(standPath,standAnalysisNum)
-#' @export
-standardInputProc<-function(path,standardAnalysisNums.vec){
-  standardFiles<-all_filenames(path)
-  setwd(path)
-  iso<-iso_read_continuous_flow(standardFiles)
-  standFileNames<-find_files_by_analysis_num(iso,standardAnalysisNums.vec)
-  # get sample peak d18O data from standard files
-  d18O.list<-d18O_samples_list(standFileNames)
-  return(d18O.list)
-}
-
-
-# (47)
 #' stand_lm: function to perform the linear regression for the internal standards quality check and plot the results
 #' @param acceptedMeas.df dataframe with accepted and measured values for internal standards (rownames are thestandard names, colnames=c(accepted,measured))
 #' @return list whose first element is the lm model and the second is the model summary
@@ -1839,7 +1826,7 @@ standardInputProc<-function(path,standardAnalysisNums.vec){
 stand_lm<-function(acceptedMeas.df){
   ret.list<-list()
   # linear regression
-  standard.fit<-lm(accepted~measured,data=acceptedMeas.df)
+  standard.fit<-lm(accepted_d18O16O~measured_d18O16O,data=acceptedMeas.df)
   standard.fit
   fit.summ<-summary(standard.fit)
   # plot
@@ -1849,6 +1836,26 @@ stand_lm<-function(acceptedMeas.df){
   ret.list[[1]]<-standard.fit
   ret.list[[2]]<-fit.summ
   return(ret.list)
+}
+
+
+# (47)
+#' standardInputProc: function that gets sample peak and d18O/16O data for internal standards quality check
+#' @param path path to the .dxf internal standards experiment files
+#' @param standardAnalysisNums.vec numeric vector of analysis numbers
+#' @return list of dataframes containing d18O/16O vendor data for each file
+#' @examples
+#' Usage Example
+#' stand_d18O.list<-standardInputProc(standPath,standAnalysisNum)
+#' @export
+standardInputProc<-function(path,standardAnalysisNums.vec,exp.df){
+  standardFiles<-all_filenames(path)
+  setwd(path)
+  iso<-iso_read_continuous_flow(standardFiles)
+  standFileNames<-find_files_by_analysis_num(iso,standardAnalysisNums.vec)
+  # get sample peak d18O data from standard files
+  d18O.list<-d18O_samples_list(standFileNames,exp.df=exp.df)
+  return(d18O.list)
 }
 
 

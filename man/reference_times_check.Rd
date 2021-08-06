@@ -8,9 +8,9 @@ reference_times_check(
   vend.df,
   expectedPeak.num,
   diff.t = 10,
-  expectedStart,
-  expectedRt,
-  expectedEnd
+  expectedStart = c(27.17, 67.0193, 166.5653, 206.492, 843.3227),
+  expectedRt = c(47.3888, 87.184, 186.7608, 226.5096, 863.5029),
+  expectedEnd = c(50.4929, 90.3422, 189.8572, 229.6987, 866.6069)
 )
 }
 \arguments{

@@ -4,7 +4,7 @@
 \alias{standardInputProc}
 \title{standardInputProc: function that gets sample peak and d18O/16O data for internal standards quality check}
 \usage{
-standardInputProc(path, standardAnalysisNums.vec)
+standardInputProc(path, standardAnalysisNums.vec, exp.df)
 }
 \arguments{
 \item{path}{path to the .dxf internal standards experiment files}

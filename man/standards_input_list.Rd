@@ -4,7 +4,7 @@
 \alias{standards_input_list}
 \title{standards_input_list: function to create input list for internal standards quality check}
 \usage{
-standards_input_list(standardPaths.vec, standardAnalysisNums.df)
+standards_input_list(standardPaths.vec, standardAnalysisNums.df, exp.df)
 }
 \arguments{
 \item{standardPaths.vec}{character vector containing the paths to the .dxf files for internal standards experiments}

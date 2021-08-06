@@ -4,7 +4,7 @@
 \alias{d18O_samples_list}
 \title{d18O_samples_list: function to get sample peak and d18O data for the specified files}
 \usage{
-d18O_samples_list(standardFileNames)
+d18O_samples_list(standardFileNames, expPk.num = 5, exp.df)
 }
 \arguments{
 \item{standardFilesNames}{character vector of filenames containing standards (of same type)}

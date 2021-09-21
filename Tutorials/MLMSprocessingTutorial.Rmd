@@ -1,0 +1,428 @@
+---
+title: "RMDdraft1MLMS"
+output:
+  minidown::mini_document:
+    framework: water
+    theme: light
+    code_folding:
+      source: show
+      output: show
+      message: hide
+      warning: hide
+      error: show
+    toc: true
+    toc_float: true
+    toc_highlight: true
+    tabset: true
+    number_sections: true
+    anchor_sections: false
+    self_contained: false
+    code_download: true
+    math: "katex"
+    keep_md: true
+    fig_caption: true
+vignette: >
+  %\VignetteIndexEntry{Writing Vignette with the 'minidown' Package}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: references.bib
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(results.folding = NULL)
+`%>%` <- magrittr::`%>%`
+# load R packages
+library(readr)
+library(isoreader)
+library(MLMS)
+library(katex)
+library(png)
+library(grid)
+library(DT)
+library(pracma)
+library(kableExtra)
+library(InterpretMSSpectrum)
+library(ggplot2)
+library(plotly)
+library(bookdown)
+library(doParallel)
+library(splancs)
+```
+
+This article introduces the MLMS R library and is a draft of a vignette[@R-base].
+
+The github link for MLMS is 
+[github.com/lilyacb/MLMS](https://github.com/lilyacb/MLMS).  Open this document in a browser for the links to work.
+
+# Accessing information and making tables
+
+Tables summarizing .dxf file contents can be produced with *read_summary()*.
+```{r,message=F,fig.cap="Summary of file contents"}
+  datafile<-"170525_NaHCO3 L + NaCl L_.dxf"
+  #data_file<-"https://github.com/lilyacb/MLMS/blob/main/Data/170525_NaHCO3%2#0L%20%2B%20NaCl%20L_.dxf"  # would work if changed to csv!!
+  #file.summ<-read_csv(data_file)
+  # Print table without kable
+  fileI.summ<-read_summary(datafile)
+```
+<br><br>
+
+You can use kable to make a fancier table.
+```{r,message=F}
+  #class.source='details hide'
+ # Using kable
+  knitr::kable(fileI.summ,caption="170525_NaHCO3 L + NaCl L_.dxf file summary")
+```
+<br><br>
+
+You can print information contained in the file_info, vendor_info and raw_data tabs of the .dxf file.
+
+Get file information with *file_info()*.
+```{r,message=FALSE}
+# Can get file information
+fi.df<-file_info(files=datafile)
+knitr::kable(fi.df,caption="170525_NaHCO3 L + NaCl L_.dxf file information")
+```
+<br>
+
+Get the vendor data table with *vendor_info()*.
+```{r,message=F}
+# Can get vendor info
+vi.df<-vendor_info(datafile)
+kbl(head(vi.df)[1:3,],caption="170525_NaHCO3 L + NaCl L_.dxf vendor data") %>% 
+  kable_paper() %>%
+  scroll_box(width=5,height = "200px")
+```
+<br>
+
+Get the raw data using *raw_data()*
+```{r,message=FALSE}
+# Can get the raw data
+raw.df<-raw_data(datafile)
+knitr::kable(head(raw.df),caption="170525_NaHCO3 L + NaCl L_.dxf raw data")
+```
+<br>
+
+Get the resistor information using *resistor_data()*
+```{r,message=FALSE}
+# Can get the resistor information
+resist<-resistor_data(datafile)
+knitr::kable(resist,caption="170525_NaHCO3 L + NaCl L_.dxf resistor information")
+```
+<br>
+
+Get the isotopic reference values with *reference_values_ratio()*
+```{r,message=FALSE}
+# Can get isotopic reference values with ratios
+stand_ratio<-reference_values_ratio(datafile)
+knitr::kable(stand_ratio,caption="170525_NaHCO3 L + NaCl L_.dxf isotopic reference values with ratios")
+```
+<br>
+
+Use DT to render larger tables neatly. You can show only a few lines, have a search bar, filters and more.
+
+```{r,message=FALSE}
+datatable(vi.df,#filter="top",
+          options=list(pageLength=5,scrollX=T))
+```
+<br><br>
+
+# MS data processing
+
+## Peak areas
+
+Peak areas were calculated using the *trapz* package, which implements numerical integration via the trapezoid rule.
+
+Math with KaTex produces nice equations. You can highlight formulas or text.<br>
+<br>
+The trapezoid rule:
+<style>
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
+</style>
+<div class = "blue">
+$$
+\int\limits_a^b f(x)dx\approx
+\sum_{n=0}^{N-1}{\frac{1}{2}(f_n+f_{n+1})(\varDelta x)_n}
+$$
+</div>
+<br>
+You can insert images into an RMD doc.
+```{r,fig.cap=paste("Graphical illustration of the trapezoid rule for numerical integration")}
+trapImg<-readPNG("trapezoidalRuleImg.png")
+grid.raster(trapImg)
+```
+<br>
+
+Calculate the peak areas using *trap_area_allPks()*.
+```{r,message=FALSE}
+# Can get peak areas
+rawN<-"v44.mV"
+areaPks<-trap_area_allPks(raw.df,vi.df,rawN)
+knitr::kable(areaPks,caption="170525_NaHCO3 L + NaCl L_.dxf all peak areas")
+```
+<br><br>
+
+
+## Data visualization
+<style>
+p.caption {
+  font-size: 0.9em;
+  font-style: italic;
+  color: grey;
+  margin-right: 10%;
+  margin-left: 10%;  
+  text-align: justify;
+}
+</style>
+
+You can graph the intensity vs retention time using *plot_ms()*.
+```{r,fig.cap="Intensity_all vs Rt for 170525_NaHCO3_L_+_NaCl",message=FALSE}
+# Intensity_All vs Rt for an experiment
+ia.xname<-"Rt"
+ia.yname<-"Intensity_All"
+# plot
+plot_ms(vi.df,ia.xname,ia.yname)
+```
+<br><br>
+
+
+Plot individual peaks in an experiment with *plot_individual_peaks()*.
+```{r,message=FALSE,fig.cap=paste("Peak 1 intensity (v44.mV) vs. time")}
+# Can plot peaks in an experiment individually (Intensity (mV) vs Rt)
+time.s<-as.numeric(raw.df$time.s)
+start.v1<-as.numeric(vi.df$Start)
+end.v1<-as.numeric(vi.df$End)
+v44<-as.numeric(raw.df$v44.mV)
+# plot just the first peak to inspect
+peak1.p<-plot_individual_peaks(start.v1,end.v1,time.s,v44,"1","v44.mV")
+```
+<br><br>
+
+Plot the raw data, intensity vs retention time, with *gg_raw_plot()*--make function!!
+
+Use ggplot to plot the raw (**redo colour label in legend**)
+```{r,fig.caption="170525_NaHCO3 L + NaCl L_.dxf raw data"}
+raw.dat<-read.table("LLrawdat")
+ggplot(raw.dat,aes(x=time.s,y=v44.mV))+
+  geom_line(aes(color="v44.mV"))+
+  geom_line(aes(x=time.s,y=v45.mV,color="v45.mV"))+
+  geom_line(aes(x=time.s,y=v46.mV,color="v46.mV"))+
+  labs(title="170525_NaHCO3 L + NaCl U",x="time.s",y="v44_v45_v46.mV")
+```
+<br>
+
+Plot the raw data of all files in a directory and export to a pdf file using *generic_plot_all_raw()* **change to ggplot version**--new func!
+```{r,message=FALSE}
+# Can plot raw data of all files in a directory
+# Get all filenames of .dxf files in the directory
+LLdir<-"NaHCO3_L_+_NaCl_L"
+fileNames<-all_filenames(LLdir)
+setwd(LLdir)
+rawList<-raw_data_all(fileNames)
+setwd("~/Desktop/EuropaMLMS/rmdMLMS")
+# plot all raw data
+generic_plot_all_raw(rawList)
+```
+<br>
+
+## Sorting and quality checks
+
+### Automated sorting of a directory of .dxf files
+A directory of .dxf files can be organized by Identifier_1 and Preparation method.
+<br><br>
+
+```{r,echo=FALSE,message=FALSE}
+sort_by_identifier_1<-function(path){
+  all_filenames<-all_filenames(path)
+  print(all_filenames)
+  un_identifiers<-unique_identifiers(all_filenames)
+  print(un_identifiers)
+  num_identifiers<-length(un_identifiers)
+  path_ID<-paste(path,"/",sep="")
+  for(i in seq(1:num_identifiers)){
+    # get all files with un_identifier[i]
+    I1_files<-identifier_1_files(all_filenames,un_identifiers[i])
+    move_identifier_1_files(I1_files,path_ID,un_identifiers[i])
+  }
+}
+
+unique_identifiers<-function(filenames){
+  #filenames<-get_all_filenames(path)
+  vendor.info<-file_info(filenames)
+  all_identifiers<-vendor.info$Identifier_1
+  #print(all_identifiers)
+  num_all_identifiers<-length(all_identifiers)
+  #print(num_all_identifiers)
+  unique_identifiers<-c()
+  for(i in seq(1:num_all_identifiers)){
+    curr_identifier<-all_identifiers[i]
+    curr_identifier
+    if(sum(which(unique_identifiers==curr_identifier))==0){
+      unique_identifiers<-c(unique_identifiers,curr_identifier)
+    }
+  }
+  #print(paste("uniqueIDs",unique_identifiers,sep=" "))
+  return(unique_identifiers)
+}
+
+file_info<-function(files){
+  num_files<-length(files)
+  msdat<-iso_read_continuous_flow(files[1:num_files])
+  file_info<-msdat %>%
+    iso_get_file_info(
+      select = c(
+        #rename?
+        Identifier_1 = `Identifier 1`,
+        # select columns without renaming
+        `Analysis`, `Preparation`,
+        # select the time stamp and rename it to `Date & Time`
+        Date_and_Time = file_datetime
+      ),
+      # explicitly allow for file specific rename (for the new ID column)
+      file_specific = TRUE #mostly useful with data from different instruments
+    )
+  # convert from tibble to df
+  file_info.df<-as.data.frame(file_info)
+}
+
+identifier_1_files<-function(files,identifier_1){
+  print(identifier_1)
+  identifier_1_files_ind<-pvec(seq_along(files),function(i)
+    grepl(identifier_1,files[i],fixed=T))
+  print(identifier_1_files_ind)
+  # get the indices
+  #identifier_1_files_ind<-which(identifier_1_files_ind) #which are TRUE
+  # get the identifier_1 file names
+  identifier_1_files<-files[identifier_1_files_ind]
+  i1.df<-as.data.frame(identifier_1_files)
+  colnames(i1.df)<-c(identifier_1)
+  return(i1.df)
+}
+```
+
+Contents of an unsorted directory of .dxf files.
+```{r,echo=FALSE}
+# print contents of pre-sorted dir
+setwd("~/Desktop/EuropaMLMS/rmdMLMS/vignetteData/unsortedData")
+list.files()
+setwd("~/Desktop/EuropaMLMS/rmdMLMS")
+```
+<br>
+
+Use *sort_by_identifier_1()* to sort a directory of .dxf files by Identifier_1
+```{r,eval=TRUE,message=FALSE,eval=FALSE}
+# Use Identifier_1 labels to sort data
+unsortedPath<-"~/Desktop/EuropaMLMS/rmdMLMS/vignetteData/sortFolder"
+setwd(unsortedPath)
+sort_by_identifier_1(unsortedPath)
+setwd("~/Desktop/EuropaMLMS/rmdMLMS")
+```
+<br>
+Contents of the sorted directory.
+```{r,echo=FALSE}
+setwd("~/Desktop/EuropaMLMS/rmdMLMS/vignetteData/sortFolder")
+list.files()
+setwd("~/Desktop/EuropaMLMS/rmdMLMS")
+```
+<br>
+
+### Automated quality-control and calibration of a directory of .dxf files
+
+Perform quality checks and remove files that fail any of the checks.
+
+<body>
+**Quality checks:**
+  <ul>
+ 1. 
+ 2. 
+ 3. 
+ 4. 
+ 5. 
+ 6.
+ </ul>
+<body>
+
+The list above represents the order of quality checks and a file is removed immediately after it fails a check (before the next check is performed).
+
+**1. Peaks present/number of peaks **<br>
+Check that there are more than 0 and fewer than a specified number of peaks.
+```{r}
+```
+
+**2. Reference peaks**<br>
+Check- 
+```{r}
+```
+
+**3. Reference peaks**<br>
+checks-
+```{r}
+```
+<br>
+
+#### Quality-control summary for a directory of .dxf files {.tabset .tabset-fade .tabset-pills}
+
+Output from the quality check and calibration process can summarized in tables and analyzed. 
+
+##### QC1 {.unnumbered}
+(tab content)
+
+##### QC2 {.unnumbered}
+(tab content)
+
+#### {.unnumbered}
+Summaries for analyses that failed checks
+<br><br>
+
+
+#### Internal standards summary for a directory of .dxf files (if standards present)
+Internal standards can be checked for a batch of runs (several .dxf files with internal standard experiments).
+<br><br>
+
+
+### Automated separation and quality-control of reference and sample peaks in a combined .csv file for multiple experiments
+Processing of weekeqdata (three .csv files) into quality-checked reference and sample peaks 
+
+<br><br>
+
+
+# UMAP
+Illustration of interactive graphics
+
+## Unfiltered data
+UMAP for different reactions that have not been quality-checked.<br>
+This UMAP uses a directory of unsorted, unfiltered data and is for all the peaks in the data set.
+
+```{r}
+unfiltPlot.dat<-read.table("UMAP_NaHCO3_+_NaCl_notQC")
+p<-ggplot(unfiltPlot.dat,
+       aes(x=x,y=y,color=Identifier_1))+
+       geom_point()+
+       labs(title="UMAP of NaHCO3 + NaCl (not quality-checked)")
+ggplotly(p)
+```
+<br><br>
+
+
+## Quality-controlled data
+UMAP for different reactions that have been quality-checked.<br>
+
+EXAMPLE of interactive plot with multiple variables
+
+```{r}
+library(gapminder) 
+p <- gapminder %>%
+  filter(year==1977) %>%
+  ggplot( aes(gdpPercap, lifeExp, size = pop, color=continent)) +
+  geom_point() +
+  scale_x_log10() +
+  theme_bw()
+ 
+ggplotly(p)
+```
+<br>
+
+
+# References
+
+

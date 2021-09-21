@@ -842,7 +842,7 @@ identifier_1_files<-function(files,identifier_1,cores=2){
   identifier_1_files_ind<-pvec(seq_along(files),function(i)
     grepl(identifier_1,files[i],fixed=T),mc.cores=cores)
   # get the indices
-  identifier_1_files_ind<-which(identifier_1_files_ind) #which are TRUE
+  #identifier_1_files_ind<-which(identifier_1_files_ind) #which are TRUE
   # get the identifier_1 file names
   identifier_1_files<-files[identifier_1_files_ind]
   i1.df<-as.data.frame(identifier_1_files)
@@ -1776,7 +1776,7 @@ separate_by_analysis_num<-function(vend.df){
 #' sort_by_identifier_1("~lily/Desktop/Europa MLMS/Europa_Data/Europa double comp")
 #' @export
 sort_by_identifier_1<-function(path){
-  all_filenames<-get_all_filenames(path)
+  all_filenames<-all_filenames(path)
   un_identifiers<-get_unique_identifiers(path,all_filenames)
   num_identifiers<-length(un_identifiers)
   path_ID<-paste(path,"/",sep="")

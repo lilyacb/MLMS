@@ -4,7 +4,7 @@
 # (1) all_filenames(path) -
 #         get all .dxf filenames in directory
 #
-# (2) all_PA_trap(start.vec,end.vec,time.vec,int.vec) -
+# (2) all_PA_trap(start.vec,end.vec,time.vec,int.vec)
 #         calculate all peak areas using trapz
 #
 # (3) avg_sd_d18O_standards(allStandards_d18O.list,standNames=c("L1","H1","LW"),standAcceptedVals.vec=c(-8.55,4.85,-3.85),accStandRatioSD=c(0.2,0.2,0.2)) -
@@ -780,12 +780,21 @@ generic_raw_plot<-function(raw.df,title){
   # get time data
   time.s<-raw.df$time.s
   # this way, have to plot the tallest one first to get all in same window
-  plot(time.s,v46,type="l",col="magenta",ylab="v44_v45_v46.mV")
+  plot(time.s,v46,type="l",col="magenta",ylab="Intensity (mV)",xlab="Time(s)")#v44_v45_v46.mV
   lines(time.s,v45,type="l",col="green")
   lines(time.s,v44,type="l",col="blue")
   title(main=title)
 }
 
+##### FIXME
+# get files by analysis numbers from iso file directory
+get_analysis_nums<-function(path,analysis.vec){
+  allFiles<-all_filenames(path)
+  fileInfo.df<-file_info(allFiles)
+  retFilesInd<-which(fileInfo.df$Analysis %in% analysis.vec)
+  retFiles<-fileInfo.df$file_id[retFilesInd]
+  return(retFiles)
+}
 
 # (16)
 #' group_picked_times: function that organizes the times picked from the PeakTimes function
@@ -862,7 +871,7 @@ identifier_1_files<-function(files,identifier_1,cores=2){
 #' Usage Example
 #' intensity_similarity_check(vend.df$Ampl_44,"Ampl_44",c(1,2,4,5,16),0.1)
 #' @export
-intensity_similarity_check<-function(vendAmpl,amplName,peakNr.vec,relDiff.thresh=0.1){
+intensity_similarity_check<-function(vendAmpl,amplName,peakNr.vec,relDiff.thresh=0.1,ID1){
   intCheck.list<-list()
   # analyze intensity similarity by relative difference
   int.check<-FALSE
@@ -876,11 +885,12 @@ intensity_similarity_check<-function(vendAmpl,amplName,peakNr.vec,relDiff.thresh
   sumRelDiff<-sum(relDiff)
   if(sumRelDiff==length(relDiff)){
     int.check<-TRUE
-    print("intensities within similarity criteria")
+    #print("intensities within similarity criteria")
     intCheck.list[[1]]<-int.check
   } else{
     int.check<-FALSE
     print("intensities not within similarity criteria")
+    print(paste("ID1: ",ID1,sep=""))
     #return(int.check)
     intCheck.list[[1]]<-int.check
   }
@@ -918,9 +928,11 @@ iso_ratio_similarity<-function(vend.df,peakNr.vec,sdC.thresh=0.1,sdO.thresh=0.1)
   sd.C<-FALSE
   if(sd.13C<sdC.thresh){
     sd.C<-TRUE
-    print("SD 13C/12C within accepted threshold")
+    #print("SD 13C/12C within accepted threshold")
   } else{
-    print("SD 13C/12C not within accepted threshold")
+    print(paste("SD 13C/12C not within accepted threshold for Analysis ",
+                analysis,sep=""))
+
   }
 
   # sd of 18O/16O
@@ -928,9 +940,10 @@ iso_ratio_similarity<-function(vend.df,peakNr.vec,sdC.thresh=0.1,sdO.thresh=0.1)
   sd.O<-FALSE
   if(sd.18O<sdO.thresh){
     sd.O<-TRUE
-    print("SD 18O/16O within accepted threshold")
+    #print("SD 18O/16O within accepted threshold")
   } else{
-    print("SD 18O/16O not within accepted threshold")
+    print("SD 18O/16O not within accepted threshold for Analysis ",
+          analysis,sep=",")
   }
 
   # dataframe for boolean vals for within threshold
@@ -958,17 +971,16 @@ iso_ratio_similarity<-function(vend.df,peakNr.vec,sdC.thresh=0.1,sdO.thresh=0.1)
 #' Usage example
 #' move_Identifier_1_files(identifier_1_d_files,pathc,identifier_1_d)
 #' @export
-move_identifier_1_files<-function(identifier_1_files,path,identifier_1){
-  num_files<-dim(identifier_1_files)[1]
+move_identifier_1_files<-function(identifier_1files,path,identifier_1){
+  num_files<-length(identifier_1files)
   for(i in seq(1:num_files)){
-    orig_dir<-paste(path,"/",identifier_1_files[i,],sep="")
+    orig_dir<-paste(path,"/",identifier_1files[i],sep="")
     #orig.dir
-    new_dir<-paste(path,identifier_1,"/",identifier_1_files[i,],sep="")
-    #new.dir
+    new_dir<-paste(path,"/",identifier_1,"/",identifier_1files[i],sep="")
+    new_dir
     file_move(orig_dir,new_dir)
   }
 }
-
 
 # (21)
 #' peak_area_trap: function that returns the area of a peak using the integration trapezoidal rule via trapz
@@ -1229,7 +1241,7 @@ plot_individual_peaks<-function(start.t,end.t,time.vec,int.vec,peak_num,v.mv){
 #' @return PlotSpec plot of the specified columns from vendor_info.df
 #' @examples
 #' Usage example
-#' plot_ms("Rt","Intensity_All")
+#' plot_ms(vend.df,"Rt","Intensity_All")
 #' @export
 plot_ms<-function(vendor_info.df,x_name="Rt",y_name="Intensity_All"){
   x_ind<-which(colnames(vendor_info.df)==x_name)
@@ -1659,7 +1671,7 @@ sample_peaks_process<-function(refTimesOutput,vend.df,flushExpT=135,flushTint=10
   if(flushNotPresent){
     print("no flush peak detected within expected time interval")
   } else{ # remove flush peak
-    print("flush peak detected within expected time interval")
+    #print("flush peak detected within expected time interval")
     procSample<-procSample[-flushInd,]
   }
   # first sample
@@ -1674,13 +1686,13 @@ sample_peaks_process<-function(refTimesOutput,vend.df,flushExpT=135,flushTint=10
   # check that the time for the first sample peak is in the expected interval
     sample1withinTime<-abs(firstSampExpT-firstSampleTime)<firstSampTint
     if(sample1withinTime){
-      print("First sample peak detected within expected time interval")
+      #print("First sample peak detected within expected time interval")
       procSample<-procSample[-c(firstSampleInd),]
     } else{ # dont remove first sample peak
       print("First sample peak not within expected time interval")
   }
   # remove flush peak and 1st sample peak
-  print(paste("Removed peaks at Rts ",round(as.numeric(flushPeak$Rt),3), "s (flush peak) and ",round(firstSampleTime,3),"s (1st sample peak)",sep=""))
+  #print(paste("Removed peaks at Rts ",round(as.numeric(flushPeak$Rt),3), "s (flush peak) and ",round(firstSampleTime,3),"s (1st sample peak)",sep=""))
   return(procSample)
 }
 
@@ -1777,12 +1789,12 @@ separate_by_analysis_num<-function(vend.df){
 #' @export
 sort_by_identifier_1<-function(path){
   all_filenames<-all_filenames(path)
-  un_identifiers<-get_unique_identifiers(path,all_filenames)
+  un_identifiers<-unique_identifiers(path,all_filenames)
   num_identifiers<-length(un_identifiers)
   path_ID<-paste(path,"/",sep="")
   for(i in seq(1:num_identifiers)){
     # get all files with un_identifier[i]
-    I1_files<-get_identifier_1_files(all_filenames,un_identifiers[i])
+    I1_files<-identifier_1_files(all_filenames,un_identifiers[i])
     move_identifier_1_files(I1_files,path_ID,un_identifiers[i])
   }
 }
@@ -2022,7 +2034,6 @@ vendor_info_all<-function(files){
   for(i in seq(1,length(files))){
     vi.df<-vendor_info(files[i])
     vi.list[[i]]<-vi.df
-    print(i)
   }
   return(vi.list)
 }

@@ -21,5 +21,5 @@ plot_ms: Function to plot mass spec data from vendor table
 }
 \examples{
 Usage example
-plot_ms("Rt","Intensity_All")
+plot_ms(vend.df,"Rt","Intensity_All")
 }

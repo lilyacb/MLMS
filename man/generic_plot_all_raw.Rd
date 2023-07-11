@@ -4,7 +4,7 @@
 \alias{generic_plot_all_raw}
 \title{generic_plot_all_raw: function that plots all the raw data in a list containing raw data from different experiments}
 \usage{
-generic_plot_all_raw(raw.list)
+generic_plot_all_raw(raw.list, fileName, analysis.vec, ID1.vec, date.vec)
 }
 \arguments{
 \item{raw.list}{list whose elements are the raw.df to be plotted}

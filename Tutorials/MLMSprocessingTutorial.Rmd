@@ -55,6 +55,11 @@ This article introduces the MLMS R library and is a draft of a vignette[@R-base]
 The github link for MLMS is 
 [github.com/lilyacb/MLMS](https://github.com/lilyacb/MLMS).  Open this document in a browser for the links to work.
 
+
+# New edit: clean up filenames in each directory of data: replace " " with "_".  
+
+
+
 # Accessing information and making tables
 
 Tables summarizing .dxf file contents can be produced with *read_summary()*.
@@ -407,7 +412,7 @@ ggplotly(p)
 ## Quality-controlled data
 UMAP for different reactions that have been quality-checked.<br>
 
-EXAMPLE of interactive plot with multiple variables
+EXAMPLE of interactive plot with multiple variables (NOT MLMS data)
 
 ```{r}
 library(gapminder) 

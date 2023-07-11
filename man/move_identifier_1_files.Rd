@@ -4,14 +4,14 @@
 \alias{move_identifier_1_files}
 \title{move_identifier_1_files: function that moves all files with a specified identifier into a folder labeled with the Identifier_1 value}
 \usage{
-move_identifier_1_files(identifier_1_files, path, identifier_1)
+move_identifier_1_files(identifier_1files, path, identifier_1)
 }
 \arguments{
-\item{identifier_1_files}{files that contain the desired identifier}
-
 \item{path}{location of the file to be copied}
 
 \item{identifier_1}{the identifier_1 of the files to be copied}
+
+\item{identifier_1_files}{files that contain the desired identifier}
 }
 \description{
 move_identifier_1_files: function that moves all files with a specified identifier into a folder labeled with the Identifier_1 value

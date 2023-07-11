@@ -8,7 +8,8 @@ intensity_similarity_check(
   vendAmpl,
   amplName,
   peakNr.vec,
-  relDiff.thresh = 0.1
+  relDiff.thresh = 0.1,
+  ID1
 )
 }
 \arguments{
